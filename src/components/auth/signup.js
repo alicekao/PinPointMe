@@ -8,7 +8,7 @@ class Signup extends Component {
     return (
       <form>
         <fieldset className="form-group">
-          <label>Username: </label>
+          <label>Username:</label>
           <input type="text" {...username.input} className="form-control"/>
         </fieldset>
         <fieldset className="form-group">
