@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack -p",
+    "build": "webpack -p --config webpack.production.config.js",
     "webpack": "webpack-dev-server --hot --progress",
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
@@ -40,7 +40,7 @@
     "react-router": "^2.5.2",
     "redux": "^3.5.2",
     "redux-form": "^5.3.1",
-    "webpack": "^1.13.1",
+    "webpack": "^1.13.1"
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",
