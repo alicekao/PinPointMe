@@ -5,6 +5,7 @@ class App extends Component {
     return (
       <div>
         Pinpointme
+        {this.props.children}
       </div>
     );
   }
