@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "heroku": "heroku logs --app pinpointme",
     "build": "webpack -p --config webpack.production.config.js",
     "webpack": "webpack-dev-server --hot --progress",
     "start": "cross-env NODE_ENV=production node index.js",

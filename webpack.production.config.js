@@ -1,3 +1,4 @@
+console.log('=====================', __dirname);
 module.exports = {
   entry: [
     './src/index.js'
@@ -12,9 +13,8 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx']
   },
+  devTool: 'eval',
   output: {
-    path: __dirname+ '/dist',
-    publicPath: '/',
-    filename: 'bundle.js'
+    filename: 'dist/bundle.js'
   }
 };
