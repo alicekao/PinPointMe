@@ -11,7 +11,7 @@ module.exports = {
       });
   },
 
-  generateTOken: function(id) {
+  generateToken: function(id) {
     const timestamp = new Date().getTime();
     return jwt.encode({iat: timestamp, sub: id}, config.secret);
   }
