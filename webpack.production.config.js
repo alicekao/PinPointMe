@@ -1,4 +1,3 @@
-console.log('=====================', __dirname);
 module.exports = {
   entry: [
     './src/index.js'
