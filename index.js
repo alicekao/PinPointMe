@@ -5,7 +5,7 @@ const middleware = require('./server/middleware');
 const app = express();
 middleware(app);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 const server = http.createServer(app);
 
 server.listen(port, function(err) {

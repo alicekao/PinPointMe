@@ -2,15 +2,13 @@ import React from 'react';
 import reactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router, Route, Link, browserHistory } from 'react-router';
-import { createStore, applyMiddleware } from 'redux';
-import reducers from './reducers';
+import store from './store';
 
 import App from './components/app';
 import Signup from './components/auth/signup';
 import Signin from './components/auth/signin';
 
-const createStoreWithMiddleware = applyMiddleware()(createStore);
-const store = createStoreWithMiddleware(reducers);
+
 
 reactDOM.render(
   <Provider store={store}>
