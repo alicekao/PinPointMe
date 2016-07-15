@@ -1,6 +1,5 @@
 const neo4j = require('neo4j');
-//process.env['GRAPHENEDB_URL'] || 
-const db = new neo4j.GraphDatabase('http://neo4j:pw@localhost:7474');
+const db = new neo4j.GraphDatabase(process.env['GRAPHENEDB_URL'] || 'http://neo4j:pw@localhost:7474');
 
 // user.signup({username: 'test', password: 'pw'});
 
