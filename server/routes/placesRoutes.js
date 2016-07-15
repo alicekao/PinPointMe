@@ -1,6 +1,5 @@
+const Places = require('../controllers/placesController');
+
 module.exports = function(router) {
-  router.post('/new', function(req, res) {
-    console.log(req.body);
-    res.send('success!');
-  });
+  router.post('/new', Places.addNew);
 }
