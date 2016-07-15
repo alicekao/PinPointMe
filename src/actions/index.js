@@ -5,13 +5,19 @@ import {
 } from './types';
 
 export function signinUser({username, password}) {
-  axios.post('/auth/signin', {username, password})
-  .then(resp => {
-    console.log(resp);
-  })
-  .catch(err => {
-    console.log('Error: ', err);
-  })
+  return function(dispatch) {
+    axios.post('/auth/signin', {username, password})
+    .then(resp => {
+      console.log(resp);
+      dispatch({
+        type: SIGN_IN,
+        payload: resp
+      });
+    })
+    .catch(err => {
+      console.log('Error: ', err);
+    })
+  }
 }
 
 export function signupUser({username, password}) {

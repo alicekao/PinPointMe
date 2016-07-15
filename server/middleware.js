@@ -1,9 +1,14 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const authRoutes = require ('./routes/authRoutes');
+const db = require('./db/db');
+const passport = require('./services/passport');
+
+const authRoutes = require('./routes/authRoutes');
+const placesRoutes = require('./routes/placesRoutes');
 
 const authRouter = express.Router();
+const placesRouter = express.Router();
 
 module.exports = function (app) {
   if (process.env.NODE_ENV !== 'production') {
@@ -20,5 +25,8 @@ module.exports = function (app) {
   });
 
   app.use('/auth', authRouter);
+  app.use('/api/places', placesRouter);
+
   authRoutes(authRouter);
+  placesRoutes(placesRouter);
 };
