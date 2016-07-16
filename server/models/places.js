@@ -7,5 +7,12 @@ module.exports = {
       if (err) { cb(err); }
       else { cb(null, result); }
     });
+  },
+
+  fetch: function (id, cb) {
+    db.query('MATCH (n:Place) RETURN n', null, function (err, result) {
+      if (err) { cb(err); }
+      else { cb(null, result); }
+    })
   }
 };

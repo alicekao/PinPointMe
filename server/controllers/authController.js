@@ -14,16 +14,19 @@ module.exports = {
       password: req.body.password
     };
 
-    User.signup(data, function (err, result) {
+    User.signup(data, function (err, newId) {
       if (err) { res.send(err); }
+      else if (!newId) {
+        res.send({ error: 'Username already exists' });
+      } else {
 
-      const id = result[0].n._data.metadata.id;
-      const resp = {
-        id: id,
-        token: utils.generateToken(id)
-      };
+        const resp = {
+          id: newId,
+          token: utils.generateToken(newId)
+        };
 
-      res.send(resp);
+        res.send(resp);
+      }
     });
   }
 }

@@ -16,7 +16,9 @@ module.exports = {
 
 
   fetch: function (req, res) {
-    console.log('id is: ', req.params.id);
-    res.send('hi');
+    Places.fetch(req.params.id, function(err, result) {
+      if (err) { res.send(err);}
+      else { res.send(result);}
+    })
   }
 }
