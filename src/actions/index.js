@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {
   SIGN_IN,
-  SIGN_UP
+  SIGN_UP,
+  SET_MAP
 } from './types';
 
 export function signinUser({username, password}) {
@@ -28,6 +29,13 @@ export function signupUser({username, password}) {
     .catch( err => {
       console.log('Error in signingup', err);
     })
+}
+
+export function setMap(map) {
+  return {
+    type: SET_MAP,
+    payload: map
+  }
 }
 
 export function logoutUser() {

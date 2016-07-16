@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 class App extends Component {
   render() {
     return (
-      <div>
+      <div style={{height:'100%'}}>
         Pinpointme
         {this.props.children}
       </div>
