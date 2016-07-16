@@ -1,7 +1,7 @@
 const Promise = require('bluebird');
 const bcrypt = Promise.promisifyAll(require('bcrypt-nodejs'));
 const jwt = require('jwt-simple');
-const config = require('../config');
+const secret = process.env.SECRET;
 
 module.exports = {
   hashPW: function (password) {
@@ -13,6 +13,6 @@ module.exports = {
 
   generateToken: function(id) {
     const timestamp = new Date().getTime();
-    return jwt.encode({iat: timestamp, sub: id}, config.secret);
+    return jwt.encode({iat: timestamp, sub: id}, secret);
   }
 }
