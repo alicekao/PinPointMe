@@ -1,22 +1,28 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions/index';
+import Map from './map';
 
 class mapContainer extends Component {
-  componentDidMount() {
-    const map = new google.maps.Map(document.getElementById('map'), {
-      center: { lat: -34.397, lng: 150.644 },
-      zoom: 8
-    });
-    this.props.setMap(map);
+  
+  componentWillMount() {
+    this.props.fetchPlaces(2)
   }
-
+  
   render() {
+    console.log('state is: ', this.props.map);
     return (
-      <div id="map" style={{height:'100%'}}>
+      <div style={{height:'100%'}}>
+      <Map />
       </div>
     );
   }
 }
 
-export default connect(null, actions)(mapContainer);
+function mapStateToProps(state) {
+  return {
+    map: state.map
+  }
+} 
+
+export default connect(mapStateToProps, actions)(mapContainer);

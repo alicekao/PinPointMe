@@ -2,10 +2,10 @@ const db = require('../db/db');
 const utils = require('../services/utils');
 
 const User = {
-  findOne: function(username, cb) {
-    db.query('match (a:User {username: {username}}) return a', {username:username}, function(err, result) {
-      if (err) {cb(err);}
-      else {cb(null, result);}
+  findOne: function (username, cb) {
+    db.query('match (a:User {username: {username}}) return a', { username: username }, function (err, result) {
+      if (err) { cb(err); }
+      else { cb(null, result); }
     });
   },
 

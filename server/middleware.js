@@ -20,12 +20,13 @@ module.exports = function (app) {
 
   app.use(express.static(path.join(__dirname, '../dist')));
 
+  app.use('/auth', authRouter);
+  app.use('/api/places', placesRouter);
+
   app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
   });
 
-  app.use('/auth', authRouter);
-  app.use('/api/places', placesRouter);
 
   authRoutes(authRouter);
   placesRoutes(placesRouter);

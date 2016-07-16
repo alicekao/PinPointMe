@@ -31492,6 +31492,8 @@
 	exports.signinUser = signinUser;
 	exports.signupUser = signupUser;
 	exports.setMap = setMap;
+	exports.fetchPlaces = fetchPlaces;
+	exports.addNewPlace = addNewPlace;
 	exports.logoutUser = logoutUser;
 
 	var _axios = __webpack_require__(308);
@@ -31535,6 +31537,22 @@
 	    type: _types.SET_MAP,
 	    payload: map
 	  };
+	}
+
+	function fetchPlaces(id) {
+	  _axios2.default.get('/api/places/fetchForId/' + id).then(function (resp) {
+	    console.log(resp);
+	  }).catch(function (err) {
+	    console.log('Error: ', err);
+	  });
+	}
+
+	function addNewPlace(data) {
+	  _axios2.default.post('/api/places/new', data).then(function (resp) {
+	    console.log(resp);
+	  }).catch(function (err) {
+	    console.log('Error: ', err);
+	  });
 	}
 
 	function logoutUser() {
@@ -33097,7 +33115,72 @@
 	}, mapStateToProps, actions)(Signin);
 
 /***/ },
-/* 332 */,
+/* 332 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(172);
+
+	var _index = __webpack_require__(307);
+
+	var actions = _interopRequireWildcard(_index);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Map = function (_Component) {
+	  _inherits(Map, _Component);
+
+	  function Map() {
+	    _classCallCheck(this, Map);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Map).apply(this, arguments));
+	  }
+
+	  _createClass(Map, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var map = new google.maps.Map(document.getElementById('map'), {
+	        center: { lat: -34.397, lng: 150.644 },
+	        zoom: 8
+	      });
+	      this.props.setMap(map);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { style: { height: "100%" }, id: 'map' },
+	        'Map'
+	      );
+	    }
+	  }]);
+
+	  return Map;
+	}(_react.Component);
+
+	exports.default = (0, _reactRedux.connect)(null, actions)(Map);
+
+/***/ },
 /* 333 */,
 /* 334 */,
 /* 335 */,
@@ -33164,6 +33247,10 @@
 
 	var actions = _interopRequireWildcard(_index);
 
+	var _map = __webpack_require__(332);
+
+	var _map2 = _interopRequireDefault(_map);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -33184,25 +33271,32 @@
 	  }
 
 	  _createClass(mapContainer, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      var map = new google.maps.Map(document.getElementById('map'), {
-	        center: { lat: -34.397, lng: 150.644 },
-	        zoom: 8
-	      });
-	      this.props.setMap(map);
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.props.fetchPlaces(2);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement('div', { id: 'map', style: { height: '100%' } });
+	      console.log('state is: ', this.props.map);
+	      return _react2.default.createElement(
+	        'div',
+	        { style: { height: '100%' } },
+	        _react2.default.createElement(_map2.default, null)
+	      );
 	    }
 	  }]);
 
 	  return mapContainer;
 	}(_react.Component);
 
-	exports.default = (0, _reactRedux.connect)(null, actions)(mapContainer);
+	function mapStateToProps(state) {
+	  return {
+	    map: state.map
+	  };
+	}
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, actions)(mapContainer);
 
 /***/ },
 /* 379 */

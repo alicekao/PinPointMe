@@ -6,29 +6,29 @@ import {
 } from './types';
 
 export function signinUser({username, password}) {
-  return function(dispatch) {
-    axios.post('/auth/signin', {username, password})
-    .then(resp => {
-      console.log(resp);
-      dispatch({
-        type: SIGN_IN,
-        payload: resp
-      });
-    })
-    .catch(err => {
-      console.log('Error: ', err);
-    })
+  return function (dispatch) {
+    axios.post('/auth/signin', { username, password })
+      .then(resp => {
+        console.log(resp);
+        dispatch({
+          type: SIGN_IN,
+          payload: resp
+        });
+      })
+      .catch(err => {
+        console.log('Error: ', err);
+      })
   }
 }
 
 export function signupUser({username, password}) {
-  axios.post('/auth/signup', {username, password})
+  axios.post('/auth/signup', { username, password })
     .then(resp => {
       console.log(resp);
     })
-    .catch( err => {
+    .catch(err => {
       console.log('Error in signingup', err);
-    })
+    });
 }
 
 export function setMap(map) {
@@ -36,6 +36,26 @@ export function setMap(map) {
     type: SET_MAP,
     payload: map
   }
+}
+
+export function fetchPlaces(id) {
+  axios.get('/api/places/fetchForId/'+id)
+    .then(resp => {
+      console.log(resp);
+    })
+    .catch(err => {
+      console.log('Error: ', err);
+    });
+}
+
+export function addNewPlace(data) {
+  axios.post('/api/places/new', data)
+  .then(resp => {
+    console.log(resp);
+  })
+  .catch(err => {
+    console.log('Error: ', err);
+  })
 }
 
 export function logoutUser() {
