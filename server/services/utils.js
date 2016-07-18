@@ -4,6 +4,13 @@ const jwt = require('jwt-simple');
 const secret = process.env.SECRET;
 
 module.exports = {
+  comparePassword: function(candidatePW, actualPW, cb) {
+    bcrypt.compare(candidatePW, actualPW, function(err, isMatch) {
+      if (err) { return cb(err);}
+      cb(null, isMatch)
+    })
+  },
+
   hashPW: function (password) {
     return bcrypt.genSaltAsync(10)
       .then(function (salt) {
