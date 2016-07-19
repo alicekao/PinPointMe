@@ -1,4 +1,5 @@
 const Places = require('../models/places');
+const User = require('../models/user');
 
 module.exports = {
   addNew: function (req, res) {
@@ -18,9 +19,9 @@ module.exports = {
 
 
   fetch: function (req, res) {
-    Places.fetch(req.params.id, function(err, result) {
+    Places.fetch(req.user.n.data.username, function(err, result) {
       if (err) { res.send(err);}
       else { res.send(result);}
-    })
+    });
   }
 }

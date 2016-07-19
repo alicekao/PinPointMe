@@ -11,8 +11,8 @@ module.exports = {
     });
   },
 
-  fetch: function (id, cb) {
-    db.query('MATCH (n:Place) RETURN n', null, function (err, result) {
+  fetch: function (username, cb) {
+    db.query('MATCH (:User {username: {username}})-[:LIKES]->(places) RETURN places', {username: username}, function (err, result) {
       if (err) { cb(err); }
       else { cb(null, result); }
     })

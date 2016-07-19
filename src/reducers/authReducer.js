@@ -1,5 +1,6 @@
 import {
-  AUTH_USER
+  AUTH_USER,
+  DEAUTH_USER
 } from '../actions/types';
 
 const initialState = {
@@ -10,7 +11,9 @@ const initialState = {
 export default function (state = initialState, action) {
   switch (action.type) {
     case AUTH_USER:
-      return {...state, isAuthenticated: true }
+      return {...state, isAuthenticated: true };
+    case DEAUTH_USER:
+      return {...state, isAuthenticated: false };
   }
   return state;
 }

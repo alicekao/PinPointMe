@@ -6,7 +6,7 @@ import Map from './map';
 class mapContainer extends Component {
 
   componentWillMount() {
-    // this.props.fetchPlaces(2)
+    this.props.fetchPlaces();
     console.log('mounted mapcountainer');
   }
 

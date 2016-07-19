@@ -3,8 +3,13 @@ import { browserHistory} from 'react-router';
 import {
   SIGN_UP,
   SET_MAP,
-  AUTH_USER
+  AUTH_USER,
+  DEAUTH_USER
 } from './types';
+
+const setAuthHeader = {
+  headers: { authorization: localStorage.getItem('token') }
+};
 
 export function signinUser({username, password}) {
   return function (dispatch) {
@@ -47,8 +52,8 @@ export function setMap(map) {
   }
 }
 
-export function fetchPlaces(id) {
-  axios.get('/api/places/fetchForId/' + id)
+export function fetchPlaces() {
+  axios.get('/api/places/fetchAll', setAuthHeader)
     .then(resp => {
       console.log(resp);
     })
@@ -58,7 +63,7 @@ export function fetchPlaces(id) {
 }
 
 export function addNewPlace(data) {
-  axios.post('/api/places/new', {name: 'mks', lat: 1, lng: 0.5, category: 'school'}, {headers: {authorization: localStorage.getItem('token')}})
+  axios.post('/api/places/new', { name: 'mks', lat: 1, lng: 0.5, category: 'school' }, setAuthHeader)
     .then(resp => {
       console.log('response from server is: ', resp);
     })
@@ -68,5 +73,6 @@ export function addNewPlace(data) {
 }
 
 export function logoutUser() {
-  console.log(dispatch);
+  localStorage.removeItem('token');
+  return { type: DEAUTH_USER };
 }

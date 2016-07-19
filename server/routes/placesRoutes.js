@@ -4,5 +4,5 @@ const requireJwt = passport.authenticate('jwt', {session: false});
 
 module.exports = function(router) {
   router.post('/new', requireJwt, Places.addNew);
-  router.get('/fetchForId/:id', Places.fetch);
+  router.get('/fetchAll', requireJwt, Places.fetch);
 }

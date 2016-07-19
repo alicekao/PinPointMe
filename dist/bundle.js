@@ -31047,6 +31047,8 @@
 	  switch (action.type) {
 	    case _types.AUTH_USER:
 	      return _extends({}, state, { isAuthenticated: true });
+	    case _types.DEAUTH_USER:
+	      return _extends({}, state, { isAuthenticated: false });
 	  }
 	  return state;
 	};
@@ -31070,6 +31072,7 @@
 	var SIGN_UP = exports.SIGN_UP = 'sign_up';
 	var SET_MAP = exports.SET_MAP = 'set_map';
 	var AUTH_USER = exports.AUTH_USER = 'auth_user';
+	var DEAUTH_USER = exports.DEAUTH_USER = 'deauth_user';
 
 /***/ },
 /* 303 */
@@ -31536,6 +31539,10 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var setAuthHeader = {
+	  headers: { authorization: localStorage.getItem('token') }
+	};
+
 	function signinUser(_ref) {
 	  var username = _ref.username;
 	  var password = _ref.password;
@@ -31579,8 +31586,8 @@
 	  };
 	}
 
-	function fetchPlaces(id) {
-	  _axios2.default.get('/api/places/fetchForId/' + id).then(function (resp) {
+	function fetchPlaces() {
+	  _axios2.default.get('/api/places/fetchAll', setAuthHeader).then(function (resp) {
 	    console.log(resp);
 	  }).catch(function (err) {
 	    console.log('Error: ', err);
@@ -31588,7 +31595,7 @@
 	}
 
 	function addNewPlace(data) {
-	  _axios2.default.post('/api/places/new', { name: 'mks', lat: 1, lng: 0.5, category: 'school' }, { headers: { authorization: localStorage.getItem('token') } }).then(function (resp) {
+	  _axios2.default.post('/api/places/new', { name: 'mks', lat: 1, lng: 0.5, category: 'school' }, setAuthHeader).then(function (resp) {
 	    console.log('response from server is: ', resp);
 	  }).catch(function (err) {
 	    console.log('Error: ', err);
@@ -31596,7 +31603,8 @@
 	}
 
 	function logoutUser() {
-	  console.log(dispatch);
+	  localStorage.removeItem('token');
+	  return { type: _types.DEAUTH_USER };
 	}
 
 /***/ },
@@ -33202,7 +33210,7 @@
 	  _createClass(mapContainer, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      // this.props.fetchPlaces(2)
+	      this.props.fetchPlaces();
 	      console.log('mounted mapcountainer');
 	    }
 	  }, {
