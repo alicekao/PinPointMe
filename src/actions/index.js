@@ -4,7 +4,8 @@ import {
   SIGN_UP,
   SET_MAP,
   AUTH_USER,
-  DEAUTH_USER
+  DEAUTH_USER,
+  AUTH_ERROR
 } from './types';
 
 const setAuthHeader = {
@@ -19,6 +20,7 @@ export function signinUser({username, password}) {
       })
       .catch(err => {
         console.log('Error: ', err);
+        dispatch(authError(err));
       })
   }
 }
@@ -31,6 +33,7 @@ export function signupUser({username, password}) {
       })
       .catch(err => {
         console.log('Error in signingup', err);
+        dispatch(authError(err));
       });
   }
 }
@@ -59,6 +62,7 @@ export function fetchPlaces() {
     })
     .catch(err => {
       console.log('Error: ', err);
+      dispatch(authError(err));
     });
 }
 
@@ -75,4 +79,11 @@ export function addNewPlace(data) {
 export function logoutUser() {
   localStorage.removeItem('token');
   return { type: DEAUTH_USER };
+}
+
+export function authError(message) {
+  return {
+    type: AUTH_ERROR,
+    payload: message
+  };
 }
