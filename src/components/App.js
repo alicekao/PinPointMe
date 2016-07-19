@@ -4,7 +4,7 @@ class App extends Component {
   render() {
     return (
       <div style={{height:'100%'}}>
-        Pinpointme
+        Pinpointme djfla;kdjfladfjlaadjflasjf
         {this.props.children}
       </div>
     );

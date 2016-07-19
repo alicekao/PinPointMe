@@ -31045,8 +31045,8 @@
 	  var action = arguments[1];
 
 	  switch (action.type) {
-	    case _types.SIGN_IN:
-	      return _extends({}, state, { currUser: action.payload, isAuthenticated: true });
+	    case _types.AUTH_USER:
+	      return _extends({}, state, { isAuthenticated: true });
 	  }
 	  return state;
 	};
@@ -31067,9 +31067,9 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var SIGN_IN = exports.SIGN_IN = 'sign_in';
 	var SIGN_UP = exports.SIGN_UP = 'sign_up';
 	var SET_MAP = exports.SET_MAP = 'set_map';
+	var AUTH_USER = exports.AUTH_USER = 'auth_user';
 
 /***/ },
 /* 303 */
@@ -31401,7 +31401,7 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { style: { height: '100%' } },
-	        'Pinpointme',
+	        'Pinpointme djfla;kdjfladfjlaadjflasjf',
 	        this.props.children
 	      );
 	    }
@@ -31530,6 +31530,8 @@
 
 	var _axios2 = _interopRequireDefault(_axios);
 
+	var _reactRouter = __webpack_require__(194);
+
 	var _types = __webpack_require__(302);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -31540,11 +31542,7 @@
 
 	  return function (dispatch) {
 	    _axios2.default.post('/auth/signin', { username: username, password: password }).then(function (resp) {
-	      console.log(resp);
-	      dispatch({
-	        type: _types.SIGN_IN,
-	        payload: resp
-	      });
+	      dispatch(onSignIn(resp.data.token));
 	    }).catch(function (err) {
 	      console.log('Error: ', err);
 	    });
@@ -31555,11 +31553,23 @@
 	  var username = _ref2.username;
 	  var password = _ref2.password;
 
-	  _axios2.default.post('/auth/signup', { username: username, password: password }).then(function (resp) {
-	    console.log(resp);
-	  }).catch(function (err) {
-	    console.log('Error in signingup', err);
-	  });
+	  return function (dispatch) {
+	    _axios2.default.post('/auth/signup', { username: username, password: password }).then(function (resp) {
+	      dispatch(onSignIn(resp.data.token));
+	    }).catch(function (err) {
+	      console.log('Error in signingup', err);
+	    });
+	  };
+	}
+
+	function onSignIn(token) {
+	  return function (dispatch) {
+	    dispatch({
+	      type: _types.AUTH_USER
+	    });
+	    localStorage.setItem('token', token);
+	    _reactRouter.browserHistory.push('/');
+	  };
 	}
 
 	function setMap(map) {
@@ -31578,15 +31588,15 @@
 	}
 
 	function addNewPlace(data) {
-	  _axios2.default.post('/api/places/new', data).then(function (resp) {
-	    console.log(resp);
+	  _axios2.default.post('/api/places/new', { name: 'mks', lat: 1, lng: 0.5, category: 'school' }, { headers: { authorization: localStorage.getItem('token') } }).then(function (resp) {
+	    console.log('response from server is: ', resp);
 	  }).catch(function (err) {
 	    console.log('Error: ', err);
 	  });
 	}
 
 	function logoutUser() {
-	  console.log('logging out');
+	  console.log(dispatch);
 	}
 
 /***/ },
@@ -33192,7 +33202,8 @@
 	  _createClass(mapContainer, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      this.props.fetchPlaces(2);
+	      // this.props.fetchPlaces(2)
+	      console.log('mounted mapcountainer');
 	    }
 	  }, {
 	    key: 'render',
@@ -33201,6 +33212,12 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { style: { height: '100%' } },
+	        'hi',
+	        _react2.default.createElement(
+	          'button',
+	          { onClick: this.props.addNewPlace },
+	          'Add place'
+	        ),
 	        _react2.default.createElement(_map2.default, null)
 	      );
 	    }

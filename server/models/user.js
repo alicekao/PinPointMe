@@ -6,21 +6,24 @@ const User = {
   findOne: function (userInfo, cb) {
     db.query('MATCH (n:User {username: {username}}) RETURN n', userInfo, function (err, result) {
       if (err) { return cb(err); }
+      console.log('found: ', result);
       cb(null, result[0]);
     });
   },
 
-  // userInfo is an obj w/ username and password
-  checkCredentials: function (userInfo, cb) {
-    const candidatePW = userInfo.password;
-    User.findOne(userInfo, function (err, user) {
-      if (err) { return cb(err); }
-      if (!user) {
-        return cb(null, {error: 'user not found'});
+  checkCredentials: function (username, candidatePW, cb) {
+    User.findOne({username: username}, function (err, node) {
+      if (err) { 
+        return cb(err); }
+      if (!node) {
+        return cb(null, false, {message: 'User does not exist'});
       }
-      utils.comparePassword(candidatePW, user.n.data.password, function(err, isMatch) {
-        if (err) {return cb(err);}
-        cb(null, isMatch);
+      utils.comparePassword(candidatePW, node.n.data.password, function(err, isMatch) {
+        if (err) {console.log('in heree'); return cb(err);}
+        if (!isMatch) {
+          return cb(null, false, { message: 'Wrong password'});
+        }
+        return cb(null, node);
       });
     });
   },

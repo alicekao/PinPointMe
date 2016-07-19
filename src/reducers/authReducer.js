@@ -1,5 +1,5 @@
 import {
-  SIGN_IN
+  AUTH_USER
 } from '../actions/types';
 
 const initialState = {
@@ -9,8 +9,8 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case SIGN_IN:
-      return {...state, currUser: action.payload, isAuthenticated: true }
+    case AUTH_USER:
+      return {...state, isAuthenticated: true }
   }
   return state;
 }

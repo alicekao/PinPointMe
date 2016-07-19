@@ -3,10 +3,7 @@ const utils = require('../services/utils');
 
 module.exports = {
   signin: function (req, res) {
-    User.checkCredentials(req.body, function(err, isValid) {
-      if (err) { return res.send(err); }
-      res.send(isValid)
-    })
+    res.send({token: utils.generateToken(req.body.username)});
   },
 
   signup: function (req, res) {
@@ -18,11 +15,11 @@ module.exports = {
     User.signup(data, function (err, newId) {
       if (err) { return res.send(err); }
       if (!newId) {
-        return res.send({ error: 'Username already exists' });
+        return res.status(422).send({ error: 'Username already exists' });
       }
       const resp = {
         id: newId,
-        token: utils.generateToken(newId)
+        token: utils.generateToken(req.body.username)
       };
 
       res.send(resp);
