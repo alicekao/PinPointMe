@@ -5,10 +5,12 @@ import * as actions from '../actions/index';
 
 class Header extends Component {
   renderToolbar() {
-    if (this.props.isAuth) {
+    const { isAuth, logoutUser } = this.props;
+
+    if (isAuth) {
       return (
         <li className='nav-item'>
-          <Link className='nav-link' to="/signout">Sign out</Link>
+          <a href="#" className='nav-link' onClick={logoutUser}>Sign out</a>
         </li>
       );
     }

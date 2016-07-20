@@ -49,6 +49,7 @@ class mapContainer extends Component {
     return (
       <div style={{ height: '100%' }}>
         <button onClick={this.submitNewPlace.bind(this) }>Add place</button>
+        <button onClick={this.props.geolocate}>Geolocate</button>
         <Map places={this.props.places}/>
       </div>
     );

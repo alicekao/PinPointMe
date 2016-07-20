@@ -8,6 +8,8 @@ import {
   AUTH_ERROR,
   UPDATE_PLACES
 } from './types';
+const geolocateKey = process.env.GEOLOCATE_KEY;
+console.log(geolocateKey);
 
 const setAuthHeader = {
   headers: { authorization: localStorage.getItem('token') }
@@ -52,6 +54,18 @@ export function fetchPlaces() {
         console.log('Error: ', err);
         dispatch(authError(err));
       });
+  }
+}
+
+export function geolocate() {
+  return dispatch => {
+    axios.post('https://www.googleapis.com/geolocation/v1/geolocate?key='+geolocateKey)
+    .then(resp => {
+      console.log('response is: ', resp);
+    })
+    .catch(err => {
+      console.log('Error: ', err);
+    })
   }
 }
 
