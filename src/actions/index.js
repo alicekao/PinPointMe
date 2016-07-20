@@ -12,6 +12,14 @@ const setAuthHeader = {
   headers: { authorization: localStorage.getItem('token') }
 };
 
+export function checkJWT() {
+  return dispatch => {
+    if (localStorage.getItem('token')) {
+      dispatch({ type: AUTH_USER });
+    }
+  }
+}
+
 export function signinUser({username, password}) {
   return dispatch => {
     axios.post('/auth/signin', { username, password })
@@ -40,9 +48,7 @@ export function signupUser({username, password}) {
 
 function onSignIn(token) {
   return dispatch => {
-    dispatch({
-      type: AUTH_USER
-    });
+    dispatch({ type: AUTH_USER });
     localStorage.setItem('token', token);
     browserHistory.push('/');
   }

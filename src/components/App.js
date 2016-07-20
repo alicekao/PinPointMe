@@ -1,16 +1,22 @@
 import React, {Component} from 'react';
 import Header from './header';
+import { connect } from 'react-redux';
+import * as actions from '../actions';
 
 class App extends Component {
+  
+  componentWillMount() {
+    this.props.checkJWT();
+  }
+  
   render() {
     return (
       <div style={{ height: '100%' }}>
         <Header />
-        Pinpointme djfla; kdjfladfjlaadjflasjf
         {this.props.children}
       </div>
     );
   }
 }
 
-export default App;
+export default connect(null, actions)(App);
