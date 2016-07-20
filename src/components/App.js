@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
+import Header from './header';
 
 class App extends Component {
   render() {
     return (
-      <div style={{height:'100%'}}>
-        Pinpointme djfla;kdjfladfjlaadjflasjf
+      <div style={{ height: '100%' }}>
+        <Header />
+        Pinpointme djfla; kdjfladfjlaadjflasjf
         {this.props.children}
       </div>
     );

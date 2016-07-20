@@ -1,6 +1,7 @@
 import {
   AUTH_USER,
-  DEAUTH_USER
+  DEAUTH_USER,
+  AUTH_ERROR
 } from '../actions/types';
 
 const initialState = {
