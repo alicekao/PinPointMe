@@ -31555,7 +31555,7 @@
 /* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -31564,7 +31564,6 @@
 	exports.authError = authError;
 	exports.checkJWT = checkJWT;
 	exports.fetchPlaces = fetchPlaces;
-	exports.geolocate = geolocate;
 	exports.logoutUser = logoutUser;
 	exports.setMap = setMap;
 	exports.signinUser = signinUser;
@@ -31580,9 +31579,6 @@
 	var _types = __webpack_require__(302);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var geolocateKey = process.env.GEOLOCATE_KEY;
-	console.log(geolocateKey);
 
 	var setAuthHeader = {
 	  headers: { authorization: localStorage.getItem('token') }
@@ -31630,15 +31626,16 @@
 	  };
 	}
 
-	function geolocate() {
-	  return function (dispatch) {
-	    _axios2.default.post('https://www.googleapis.com/geolocation/v1/geolocate?key=' + geolocateKey).then(function (resp) {
-	      console.log('response is: ', resp);
-	    }).catch(function (err) {
-	      console.log('Error: ', err);
-	    });
-	  };
-	}
+	// return dispatch => {
+	//   axios.post('https://www.googleapis.com/geolocation/v1/geolocate?key='+geolocateKey)
+	//   .then(resp => {
+	//     console.log('response is: ', resp);
+	//   })
+	//   .catch(err => {
+	//     console.log('Error: ', err);
+	//   })
+	// }
+	// }
 
 	function logoutUser() {
 	  localStorage.removeItem('token');
@@ -31694,7 +31691,6 @@
 	    payload: placesArr
 	  };
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(318)))
 
 /***/ },
 /* 309 */
@@ -33453,11 +33449,6 @@
 	          { onClick: this.submitNewPlace.bind(this) },
 	          'Add place'
 	        ),
-	        _react2.default.createElement(
-	          'button',
-	          { onClick: this.props.geolocate },
-	          'Geolocate'
-	        ),
 	        _react2.default.createElement(_map2.default, { places: this.props.places })
 	      );
 	    }
@@ -33520,11 +33511,29 @@
 	  _createClass(Map, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var map = new google.maps.Map(document.getElementById('map'), {
-	        center: { lat: 40.75, lng: -73.99 },
-	        zoom: 14
+	      var _this2 = this;
+
+	      this.geolocate(function (pos) {
+	        var map = new google.maps.Map(document.getElementById('map'), {
+	          center: pos || { lat: 40.75, lng: -73.99 },
+	          zoom: 14
+	        });
+	        _this2.props.setMap(map);
 	      });
-	      this.props.setMap(map);
+	    }
+	  }, {
+	    key: 'geolocate',
+	    value: function geolocate(cb) {
+	      if (navigator.geolocation) {
+	        navigator.geolocation.getCurrentPosition(function (position) {
+	          var pos = {
+	            lat: position.coords.latitude,
+	            lng: position.coords.longitude
+	          };
+	          return cb(pos);
+	        });
+	      }
+	      cb(null);
 	    }
 	  }, {
 	    key: 'render',
