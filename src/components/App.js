@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 
 class App extends Component {
-  
+
   componentWillMount() {
     this.props.checkJWT();
   }
-  
+
   render() {
     return (
       <div style={{ height: '100%' }}>
@@ -19,4 +19,10 @@ class App extends Component {
   }
 }
 
-export default connect(null, actions)(App);
+function mapStateToProps(state) {
+  return {
+    isAuth: state.auth.isAuthenticated
+  }
+}
+
+export default connect(mapStateToProps, actions)(App);

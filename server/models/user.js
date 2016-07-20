@@ -6,7 +6,7 @@ const User = {
   findOne: function (userInfo, cb) {
     db.query('MATCH (n:User {username: {username}}) RETURN n', userInfo, function (err, result) {
       if (err) { return cb(err); }
-      console.log('found: ', result);
+      console.log('found: ', result[0].n.data);
       cb(null, result[0]);
     });
   },

@@ -31077,6 +31077,7 @@
 	var AUTH_USER = exports.AUTH_USER = 'auth_user';
 	var DEAUTH_USER = exports.DEAUTH_USER = 'deauth_user';
 	var AUTH_ERROR = exports.AUTH_ERROR = 'auth_error';
+	var UPDATE_PLACES = exports.UPDATE_PLACES = 'update_places';
 
 /***/ },
 /* 303 */
@@ -31096,7 +31097,9 @@
 
 	  switch (action.type) {
 	    case _types.SET_MAP:
-	      return _extends({}, state, { map: action.payload });
+	      return _extends({}, state, { mapInstance: action.payload });
+	    case _types.UPDATE_PLACES:
+	      return _extends({}, state, { places: [].concat(_toConsumableArray(state.places), _toConsumableArray(action.payload)) });
 	    default:
 	      return state;
 	  }
@@ -31104,8 +31107,11 @@
 
 	var _types = __webpack_require__(302);
 
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 	var initialState = {
-	  map: null
+	  mapInstance: null,
+	  places: []
 	};
 
 /***/ },
@@ -31434,7 +31440,13 @@
 	  return App;
 	}(_react.Component);
 
-	exports.default = (0, _reactRedux.connect)(null, actions)(App);
+	function mapStateToProps(state) {
+	  return {
+	    isAuth: state.auth.isAuthenticated
+	  };
+	}
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, actions)(App);
 
 /***/ },
 /* 307 */
@@ -31543,14 +31555,15 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.addNewPlace = addNewPlace;
+	exports.authError = authError;
 	exports.checkJWT = checkJWT;
+	exports.fetchPlaces = fetchPlaces;
+	exports.logoutUser = logoutUser;
+	exports.setMap = setMap;
 	exports.signinUser = signinUser;
 	exports.signupUser = signupUser;
-	exports.setMap = setMap;
-	exports.fetchPlaces = fetchPlaces;
-	exports.addNewPlace = addNewPlace;
-	exports.logoutUser = logoutUser;
-	exports.authError = authError;
+	exports.updatePlaces = updatePlaces;
 
 	var _axios = __webpack_require__(309);
 
@@ -31566,11 +31579,65 @@
 	  headers: { authorization: localStorage.getItem('token') }
 	};
 
+	// data is an obj with place: name, lat, lng, category
+	function addNewPlace(data) {
+	  var name = data.name;
+	  var lat = data.lat;
+	  var lng = data.lng;
+	  var category = data.category;
+
+	  return function (dispatch) {
+	    _axios2.default.post('/api/places/new', { name: name, lat: lat, lng: lng, category: category }, setAuthHeader).then(function (resp) {
+	      console.log('response from server is: ', resp.data);
+	    }).catch(function (err) {
+	      console.log('Error: ', err);
+	      dispatch(authError(err));
+	    });
+	  };
+	}
+
+	function authError(message) {
+	  return {
+	    type: _types.AUTH_ERROR,
+	    payload: message
+	  };
+	}
 	function checkJWT() {
 	  return function (dispatch) {
 	    if (localStorage.getItem('token')) {
 	      dispatch({ type: _types.AUTH_USER });
 	    }
+	  };
+	}
+
+	function fetchPlaces() {
+	  return function (dispatch) {
+	    _axios2.default.get('/api/places/fetchAll', setAuthHeader).then(function (resp) {
+	      dispatch(updatePlaces(resp.data));
+	    }).catch(function (err) {
+	      console.log('Error: ', err);
+	      dispatch(authError(err));
+	    });
+	  };
+	}
+
+	function logoutUser() {
+	  localStorage.removeItem('token');
+	  return { type: _types.DEAUTH_USER };
+	}
+
+	function onSignIn(token) {
+	  return function (dispatch) {
+	    dispatch({ type: _types.AUTH_USER });
+	    localStorage.setItem('token', token);
+	    _reactRouter.browserHistory.push('/');
+	  };
+	}
+
+	function setMap(map) {
+	  return {
+	    type: _types.SET_MAP,
+	    payload: map
 	  };
 	}
 
@@ -31602,52 +31669,10 @@
 	  };
 	}
 
-	function onSignIn(token) {
-	  return function (dispatch) {
-	    dispatch({ type: _types.AUTH_USER });
-	    localStorage.setItem('token', token);
-	    _reactRouter.browserHistory.push('/');
-	  };
-	}
-
-	function setMap(map) {
+	function updatePlaces(placesArr) {
 	  return {
-	    type: _types.SET_MAP,
-	    payload: map
-	  };
-	}
-
-	function fetchPlaces() {
-	  return function (dispatch) {
-	    _axios2.default.get('/api/places/fetchAll', setAuthHeader).then(function (resp) {
-	      console.log(resp);
-	    }).catch(function (err) {
-	      console.log('Error: ', err);
-	      dispatch(authError(err));
-	    });
-	  };
-	}
-
-	function addNewPlace(data) {
-	  return function (dispatch) {
-	    _axios2.default.post('/api/places/new', { name: 'mks', lat: 1, lng: 0.5, category: 'school' }, setAuthHeader).then(function (resp) {
-	      console.log('response from server is: ', resp);
-	    }).catch(function (err) {
-	      console.log('Error: ', err);
-	      dispatch(authError(err));
-	    });
-	  };
-	}
-
-	function logoutUser() {
-	  localStorage.removeItem('token');
-	  return { type: _types.DEAUTH_USER };
-	}
-
-	function authError(message) {
-	  return {
-	    type: _types.AUTH_ERROR,
-	    payload: message
+	    type: _types.UPDATE_PLACES,
+	    payload: placesArr
 	  };
 	}
 
@@ -33350,25 +33375,65 @@
 	  }
 
 	  _createClass(mapContainer, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      // this.props.fetchPlaces();
-	      console.log('mounted mapcountainer');
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      if (this.props.isAuth) {
+	        this.props.fetchPlaces();
+	      }
 	    }
+	  }, {
+	    key: 'setMarker',
+	    value: function setMarker(data) {
+	      var location = data.location;
+	      var name = data.name;
+
+	      var position = new google.maps.LatLng(location[0], location[1]);
+	      var marker = new google.maps.Marker({
+	        position: position,
+	        title: name
+	      });
+
+	      marker.setMap(this.props.map);
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      var _this2 = this;
+
+	      nextProps.places.forEach(function (place) {
+	        _this2.setMarker(place);
+	      });
+	    }
+	  }, {
+	    key: 'submitNewPlace',
+	    value: function submitNewPlace() {
+	      var dummy = { name: 'chelsea park', lat: 40.75, lng: -74, category: 'park' };
+
+	      this.props.addNewPlace(dummy);
+	      var newLatLng = new google.maps.LatLng(40.75, -74);
+	      var marker = new google.maps.Marker({
+	        position: newLatLng,
+	        title: 'chelsea park'
+	      });
+	      marker.setMap(this.props.map);
+	    }
+
+	    // componentWillMount() {
+	    //   // this.props.fetchPlaces();
+	    // }
+
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      console.log('state is: ', this.props.map);
 	      return _react2.default.createElement(
 	        'div',
 	        { style: { height: '100%' } },
-	        'hi',
 	        _react2.default.createElement(
 	          'button',
-	          { onClick: this.props.addNewPlace },
+	          { onClick: this.submitNewPlace.bind(this) },
 	          'Add place'
 	        ),
-	        _react2.default.createElement(_map2.default, null)
+	        _react2.default.createElement(_map2.default, { places: this.props.places })
 	      );
 	    }
 	  }]);
@@ -33378,7 +33443,9 @@
 
 	function mapStateToProps(state) {
 	  return {
-	    map: state.map
+	    map: state.map.mapInstance,
+	    isAuth: state.auth.isAuthenticated,
+	    places: state.map.places
 	  };
 	}
 
@@ -33429,8 +33496,8 @@
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      var map = new google.maps.Map(document.getElementById('map'), {
-	        center: { lat: -34.397, lng: 150.644 },
-	        zoom: 8
+	        center: { lat: 40.75, lng: -73.99 },
+	        zoom: 14
 	      });
 	      this.props.setMap(map);
 	    }

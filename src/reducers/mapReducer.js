@@ -1,15 +1,19 @@
 import {
-  SET_MAP
+  SET_MAP,
+  UPDATE_PLACES
 } from '../actions/types';
 
 const initialState = {
-  map: null
+  mapInstance: null,
+  places: []
 }
 
 export default function (state = initialState, action) {
   switch (action.type) {
     case SET_MAP:
-      return {...state, map: action.payload };
+      return {...state, mapInstance: action.payload };
+    case UPDATE_PLACES:
+      return {...state, places: [...state.places, ...action.payload] };
     default:
       return state;
   }

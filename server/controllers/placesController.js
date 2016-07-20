@@ -19,7 +19,8 @@ module.exports = {
 
 
   fetch: function (req, res) {
-    Places.fetch(req.user.n.data.username, function(err, result) {
+    const username = req.user.n.data.username;
+    Places.fetch(username, function(err, result) {
       if (err) { res.send(err);}
       else { res.send(result);}
     });

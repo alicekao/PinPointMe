@@ -5,18 +5,51 @@ import Map from './map';
 
 class mapContainer extends Component {
 
-  componentWillMount() {
-    // this.props.fetchPlaces();
-    console.log('mounted mapcountainer');
+  componentDidMount() {
+    if (this.props.isAuth) {
+      this.props.fetchPlaces();
+    }
   }
 
+  setMarker(data) {
+    const { location, name } = data;
+    const position = new google.maps.LatLng(location[0], location[1]);
+    const marker = new google.maps.Marker({
+      position,
+      title: name
+    });
+
+    marker.setMap(this.props.map);
+  }
+  
+  componentWillReceiveProps(nextProps) {
+    nextProps.places.forEach(place => {
+      this.setMarker(place);
+    })
+  }
+  
+
+  submitNewPlace() {
+    const dummy = { name: 'chelsea park', lat: 40.75, lng: -74, category: 'park' };
+
+    this.props.addNewPlace(dummy);
+    const newLatLng = new google.maps.LatLng(40.75, -74);
+    const marker = new google.maps.Marker({
+      position: newLatLng,
+      title: 'chelsea park'
+    });
+    marker.setMap(this.props.map);
+  }
+
+  // componentWillMount() {
+  //   // this.props.fetchPlaces();
+  // }
+
   render() {
-    console.log('state is: ', this.props.map);
     return (
       <div style={{ height: '100%' }}>
-        hi
-        <button onClick={this.props.addNewPlace}>Add place</button>
-        <Map />
+        <button onClick={this.submitNewPlace.bind(this) }>Add place</button>
+        <Map places={this.props.places}/>
       </div>
     );
   }
@@ -24,7 +57,9 @@ class mapContainer extends Component {
 
 function mapStateToProps(state) {
   return {
-    map: state.map
+    map: state.map.mapInstance,
+    isAuth: state.auth.isAuthenticated,
+    places: state.map.places
   }
 }
 
