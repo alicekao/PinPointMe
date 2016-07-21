@@ -14,11 +14,20 @@ class mapContainer extends Component {
   setMarker(data, map) {
     const { location, name } = data;
     const position = new google.maps.LatLng(location[0], location[1]);
+    const infoWindow = new google.maps.InfoWindow({
+      content: name
+    });
+
     const marker = new google.maps.Marker({
       position,
       title: name
     });
+
     marker.setMap(map);
+    marker.addListener('click', () => {
+      infoWindow.open(map, marker);
+    });
+
   }
   
   componentWillReceiveProps(nextProps) {
@@ -41,13 +50,9 @@ class mapContainer extends Component {
     marker.setMap(this.props.map);
   }
 
-  // componentWillMount() {
-  //   // this.props.fetchPlaces();
-  // }
-
   render() {
     return (
-      <div style={{ height: '100%' }}>
+      <div className="col-md-9" style={{ height: '100%' }}>
         <button onClick={this.submitNewPlace.bind(this) }>Add place</button>
         <Map places={this.props.places}/>
       </div>
