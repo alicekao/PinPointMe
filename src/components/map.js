@@ -11,6 +11,7 @@ class Map extends Component {
           zoom: 14
         });
         this.props.setMap(map);
+        this.addAutocomplete(map)
       }
     });
   }
@@ -26,6 +27,30 @@ class Map extends Component {
       });
     }
     cb(null);
+  }
+
+  addAutocomplete(map) {
+    const input = document.getElementById('search');
+    const autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.bindTo('bounds', map);
+
+    autocomplete.addListener('place_changed', ()=> {
+      // Change map view to found location
+      const foundPlace = autocomplete.getPlace();
+      if (!foundPlace.geometry) {window.alert('Try a different place'); return;}
+      if (foundPlace.geometry.viewport) {
+        map.fitBounds(foundPlace.geometry.viewport);
+        map.setZoom(15);
+      }
+      else {
+        map.setCenter(foundPlace.geometry.location);
+        map.setZoom(17);
+      }
+
+      // Set marker on map
+      this.props.setMarker({location: foundPlace.geometry.location, name: foundPlace.name}, map);
+      // foundMarker.set
+    });
   }
 
   render() {

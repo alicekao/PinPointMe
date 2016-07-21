@@ -3,6 +3,14 @@ html, body {
 }
 
 #root {
-  height: 50%;
-  width: 50%;
+  height: 100%;
+  width: 100%;
+}
+
+div.container, div.row {
+  height: 100%;
+}
+
+#map {
+  height: 100%;
 }

@@ -1,9 +1,20 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import Search from './search';
 import * as actions from '../actions/index';
 import Map from './map';
 
 class mapContainer extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      infoWindow: new google.maps.InfoWindow({
+        content: null
+      })
+    }
+    this.setMarker = this.setMarker.bind(this);
+  }
 
   componentDidMount() {
     if (this.props.isAuth) {
@@ -13,25 +24,21 @@ class mapContainer extends Component {
 
   setMarker(data, map) {
     const { location, name } = data;
-    const position = new google.maps.LatLng(location[0], location[1]);
-    const infoWindow = new google.maps.InfoWindow({
-      content: name
-    });
+    const position = Array.isArray(location) ? new google.maps.LatLng(location[0], location[1]) : location;
 
     const marker = new google.maps.Marker({
       position,
-      title: name
+      map
     });
 
-    marker.setMap(map);
     marker.addListener('click', () => {
-      infoWindow.open(map, marker);
+      this.state.infoWindow.setContent(name);
+      this.state.infoWindow.open(map, marker);
     });
 
   }
   
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
     nextProps.places.forEach(place => {
       this.setMarker(place, nextProps.map);
     })
@@ -54,7 +61,12 @@ class mapContainer extends Component {
     return (
       <div className="col-md-9" style={{ height: '100%' }}>
         <button onClick={this.submitNewPlace.bind(this) }>Add place</button>
-        <Map places={this.props.places}/>
+        <Search />
+        <Map
+          places={this.props.places}
+          infoWindow={this.props.infoWindow}
+          setMarker={this.setMarker}
+          />
       </div>
     );
   }
