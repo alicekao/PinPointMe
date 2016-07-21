@@ -5,11 +5,13 @@ import * as actions from '../actions/index';
 class Map extends Component {
   componentDidMount() {
     this.geolocate(pos => {
-      const map = new google.maps.Map(document.getElementById('map'), {
-        center: pos || {lat: 40.75, lng: -73.99},
-        zoom: 14
-      });
-      this.props.setMap(map);
+      if (pos) {
+        const map = new google.maps.Map(document.getElementById('map'), {
+          center: pos || { lat: 40.75, lng: -73.99 },
+          zoom: 14
+        });
+        this.props.setMap(map);
+      }
     });
   }
 

@@ -11,20 +11,20 @@ class mapContainer extends Component {
     }
   }
 
-  setMarker(data) {
+  setMarker(data, map) {
     const { location, name } = data;
     const position = new google.maps.LatLng(location[0], location[1]);
     const marker = new google.maps.Marker({
       position,
       title: name
     });
-
-    marker.setMap(this.props.map);
+    marker.setMap(map);
   }
   
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
     nextProps.places.forEach(place => {
-      this.setMarker(place);
+      this.setMarker(place, nextProps.map);
     })
   }
   

@@ -33399,7 +33399,7 @@
 	    }
 	  }, {
 	    key: 'setMarker',
-	    value: function setMarker(data) {
+	    value: function setMarker(data, map) {
 	      var location = data.location;
 	      var name = data.name;
 
@@ -33408,16 +33408,16 @@
 	        position: position,
 	        title: name
 	      });
-
-	      marker.setMap(this.props.map);
+	      marker.setMap(map);
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
 	      var _this2 = this;
 
+	      console.log(nextProps);
 	      nextProps.places.forEach(function (place) {
-	        _this2.setMarker(place);
+	        _this2.setMarker(place, nextProps.map);
 	      });
 	    }
 	  }, {
@@ -33514,11 +33514,13 @@
 	      var _this2 = this;
 
 	      this.geolocate(function (pos) {
-	        var map = new google.maps.Map(document.getElementById('map'), {
-	          center: pos || { lat: 40.75, lng: -73.99 },
-	          zoom: 14
-	        });
-	        _this2.props.setMap(map);
+	        if (pos) {
+	          var map = new google.maps.Map(document.getElementById('map'), {
+	            center: pos || { lat: 40.75, lng: -73.99 },
+	            zoom: 14
+	          });
+	          _this2.props.setMap(map);
+	        }
 	      });
 	    }
 	  }, {
