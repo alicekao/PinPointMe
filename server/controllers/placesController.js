@@ -20,9 +20,20 @@ module.exports = {
 
   fetch: function (req, res) {
     const username = req.user.n.data.username;
-    Places.fetch(username, function(err, result) {
-      if (err) { res.send(err);}
-      else { res.send(result);}
+    Places.fetch(username, function (err, result) {
+      if (err) { return res.send(err); }
+      res.send(result);
+    });
+  },
+
+  addCategory: function (req, res) {
+    const data = {
+      username: req.user.n.data.username,
+      name: req.body.name
+    };
+    Places.addCategory(data, function (err, category) {
+      if (err) { return res.send(err); }
+      res.send(category);
     });
   }
 }

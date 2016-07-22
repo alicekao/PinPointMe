@@ -13,6 +13,18 @@ const setAuthHeader = {
   headers: { authorization: localStorage.getItem('token') }
 };
 
+export function addNewCategory(category) {
+  // hard coded for 'food'
+  return dispatch => {
+    axios.post('/api/places/newCategory', {name: 'food'}, setAuthHeader)
+      .then(resp => {
+        console.log('response from server is: ', resp.data);
+      })
+      .catch(err => {
+        console.log('err: ', err);
+      });
+  }
+}
 // data is an obj with place: name, lat, lng, category
 export function addNewPlace(data) {
   const { name, lat, lng, category } = data;
@@ -55,15 +67,15 @@ export function fetchPlaces() {
   }
 }
 
-  // return dispatch => {
-  //   axios.post('https://www.googleapis.com/geolocation/v1/geolocate?key='+geolocateKey)
-  //   .then(resp => {
-  //     console.log('response is: ', resp);
-  //   })
-  //   .catch(err => {
-  //     console.log('Error: ', err);
-  //   })
-  // }
+// return dispatch => {
+//   axios.post('https://www.googleapis.com/geolocation/v1/geolocate?key='+geolocateKey)
+//   .then(resp => {
+//     console.log('response is: ', resp);
+//   })
+//   .catch(err => {
+//     console.log('Error: ', err);
+//   })
+// }
 // }
 
 export function logoutUser() {
