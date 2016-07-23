@@ -6,18 +6,18 @@ module.exports = {
     const data = {
       name: req.body.name,
       lat: req.body.lat,
-      lng: req.body.lng,
-      category: req.body.category
+      lng: req.body.lng
     };
 
-    Places.newPOI(req.user.id, data, function (err, result) {
+    Places.newPOI(req.user.id, req.body.category, data, function (err, result) {
       if (err) { return res.send(err); }
       res.send(result);
     })
   },
 
 
-  fetch: function (req, res) {
+  fetchByUser: function (req, res) {
+    console.log('req in controler', req.user);
     const id = req.user.id;
     Places.fetch(id, function (err, result) {
       if (err) { return res.send(err); }

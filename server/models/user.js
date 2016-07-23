@@ -5,27 +5,25 @@ const User = {
   // userInfo is an obj w/ username property
   findOne: function (userInfo, cb) {
     const cypher = "MATCH (n:User {username: {username}})"
-                + "RETURN (n)";
+      + "RETURN (n)";
     db.query(cypher, userInfo, function (err, result) {
-      if (err) { 
-        console.log('error: ', err);
-        return cb(err); }
-      console.log('found: ', result[0]);
+      if (err) { return cb(err); }
       cb(null, result[0]);
     });
   },
 
   checkCredentials: function (username, candidatePW, cb) {
-    User.findOne({username: username}, function (err, node) {
-      if (err) { 
-        return cb(err); }
-      if (!node) {
-        return cb(null, false, {message: 'User does not exist'});
+    User.findOne({ username: username }, function (err, node) {
+      if (err) {
+        return cb(err);
       }
-      utils.comparePassword(candidatePW, node.password, function(err, isMatch) {
-        if (err) {console.log('in heree'); return cb(err);}
+      if (!node) {
+        return cb(null, false, { message: 'User does not exist' });
+      }
+      utils.comparePassword(candidatePW, node.password, function (err, isMatch) {
+        if (err) { return cb(err); }
         if (!isMatch) {
-          return cb(null, false, { message: 'Wrong password'});
+          return cb(null, false, { message: 'Wrong password' });
         }
         return cb(null, node);
       });
@@ -36,7 +34,7 @@ const User = {
   // cb is called w/ 2 params: err and an obj w/ user and token
   signup: function (userInfo, cb) {
     User.findOne(userInfo, function (err, result) {
-      if (err) {return cb(err);}
+      if (err) { return cb(err); }
       if (result) {
         // If user exists
         return cb(null, false);
@@ -45,14 +43,15 @@ const User = {
         .then(function (hash) {
           const info = {
             username: userInfo.username,
-            password: hash 
+            password: hash
           };
-          db.save(info, 'User', function(err, node) {
+          db.save(info, 'User', function (err, node) {
             if (err) { return cb(err); }
+            console.log('new user is: ', node);
             return cb(null, node.id);
           });
         })
-        .catch(function (err) {cb(err);});
+        .catch(function (err) { cb(err); });
     });
   }
 }

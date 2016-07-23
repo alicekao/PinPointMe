@@ -31581,14 +31581,16 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var setAuthHeader = {
-	  headers: { authorization: localStorage.getItem('token') }
+	function createAuthHeader() {
+	  return {
+	    headers: { authorization: localStorage.getItem('token') }
+	  };
 	};
 
 	function addNewCategory(category) {
 	  // hard coded for 'food'
 	  return function (dispatch) {
-	    _axios2.default.post('/api/places/newCategory', { name: 'food' }, setAuthHeader).then(function (resp) {
+	    _axios2.default.post('/api/places/newCategory', { name: 'food' }, createAuthHeader()).then(function (resp) {
 	      console.log('response from server is: ', resp.data);
 	    }).catch(function (err) {
 	      console.log('err: ', err);
@@ -31603,7 +31605,7 @@
 	  var category = data.category;
 
 	  return function (dispatch) {
-	    _axios2.default.post('/api/places/new', { name: name, lat: lat, lng: lng, category: category }, setAuthHeader).then(function (resp) {
+	    _axios2.default.post('/api/places/new', { name: name, lat: lat, lng: lng, category: category }, createAuthHeader()).then(function (resp) {
 	      console.log('response from server is: ', resp.data);
 	    }).catch(function (err) {
 	      console.log('Error: ', err);
@@ -31628,10 +31630,10 @@
 
 	function fetchPlaces() {
 	  return function (dispatch) {
-	    _axios2.default.get('/api/places/fetchAll', setAuthHeader).then(function (resp) {
+	    _axios2.default.get('/api/places/fetchAll', createAuthHeader()).then(function (resp) {
 	      dispatch(updatePlaces(resp.data));
 	    }).catch(function (err) {
-	      console.log('Error: ', err);
+	      console.log('Couldn\'t fetch places: ', err);
 	      dispatch(authError(err));
 	    });
 	  };
@@ -31655,8 +31657,8 @@
 
 	function onSignIn(token) {
 	  return function (dispatch) {
-	    dispatch({ type: _types.AUTH_USER });
 	    localStorage.setItem('token', token);
+	    dispatch({ type: _types.AUTH_USER });
 	    _reactRouter.browserHistory.push('/');
 	  };
 	}

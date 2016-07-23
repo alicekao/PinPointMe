@@ -20,7 +20,7 @@ module.exports = {
       const resp = {
         token: utils.generateToken(req.body.username)
       };
-
+      console.log('new token', resp);
       res.send(resp);
     });
   }

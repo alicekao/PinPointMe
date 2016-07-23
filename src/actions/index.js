@@ -9,14 +9,16 @@ import {
   UPDATE_PLACES
 } from './types';
 
-const setAuthHeader = {
-  headers: { authorization: localStorage.getItem('token') }
+function createAuthHeader() {
+  return {
+    headers: { authorization: localStorage.getItem('token') }
+  }
 };
 
 export function addNewCategory(category) {
   // hard coded for 'food'
   return dispatch => {
-    axios.post('/api/places/newCategory', {name: 'food'}, setAuthHeader)
+    axios.post('/api/places/newCategory', {name: 'food'}, createAuthHeader())
       .then(resp => {
         console.log('response from server is: ', resp.data);
       })
@@ -29,7 +31,7 @@ export function addNewCategory(category) {
 export function addNewPlace(data) {
   const { name, lat, lng, category } = data;
   return dispatch => {
-    axios.post('/api/places/new', { name, lat, lng, category }, setAuthHeader)
+    axios.post('/api/places/new', { name, lat, lng, category }, createAuthHeader())
       .then(resp => {
         console.log('response from server is: ', resp.data);
       })
@@ -56,12 +58,12 @@ export function checkJWT() {
 
 export function fetchPlaces() {
   return dispatch => {
-    axios.get('/api/places/fetchAll', setAuthHeader)
+    axios.get('/api/places/fetchAll', createAuthHeader())
       .then(resp => {
         dispatch(updatePlaces(resp.data));
       })
       .catch(err => {
-        console.log('Error: ', err);
+        console.log('Couldn\'t fetch places: ', err);
         dispatch(authError(err));
       });
   }
@@ -85,8 +87,8 @@ export function logoutUser() {
 
 function onSignIn(token) {
   return dispatch => {
-    dispatch({ type: AUTH_USER });
     localStorage.setItem('token', token);
+    dispatch({ type: AUTH_USER });
     browserHistory.push('/');
   }
 }
