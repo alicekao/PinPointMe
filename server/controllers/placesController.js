@@ -4,14 +4,13 @@ const User = require('../models/user');
 module.exports = {
   addNew: function (req, res) {
     const data = {
-      username: req.user.n.data.username,
       name: req.body.name,
       lat: req.body.lat,
       lng: req.body.lng,
       category: req.body.category
     };
 
-    Places.newPOI(data, function (err, result) {
+    Places.newPOI(req.user.id, data, function (err, result) {
       if (err) { return res.send(err); }
       res.send(result);
     })
@@ -19,8 +18,8 @@ module.exports = {
 
 
   fetch: function (req, res) {
-    const username = req.user.n.data.username;
-    Places.fetch(username, function (err, result) {
+    const id = req.user.id;
+    Places.fetch(id, function (err, result) {
       if (err) { return res.send(err); }
       res.send(result);
     });
@@ -28,7 +27,7 @@ module.exports = {
 
   addCategory: function (req, res) {
     const data = {
-      username: req.user.n.data.username,
+      username: req.user.username,
       name: req.body.name
     };
     Places.addCategory(data, function (err, category) {

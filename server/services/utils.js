@@ -18,8 +18,8 @@ module.exports = {
       });
   },
 
-  generateToken: function(id) {
+  generateToken: function(username) {
     const timestamp = new Date().getTime();
-    return jwt.encode({iat: timestamp, sub: id}, secret);
+    return jwt.encode({iat: timestamp, sub: username}, secret);
   }
 }

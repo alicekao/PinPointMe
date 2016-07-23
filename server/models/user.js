@@ -4,9 +4,13 @@ const utils = require('../services/utils');
 const User = {
   // userInfo is an obj w/ username property
   findOne: function (userInfo, cb) {
-    db.query('MATCH (n:User {username: {username}}) RETURN n', userInfo, function (err, result) {
-      if (err) { return cb(err); }
-      console.log('found: ', result[0].n.data);
+    const cypher = "MATCH (n:User {username: {username}})"
+                + "RETURN (n)";
+    db.query(cypher, userInfo, function (err, result) {
+      if (err) { 
+        console.log('error: ', err);
+        return cb(err); }
+      console.log('found: ', result[0]);
       cb(null, result[0]);
     });
   },
@@ -18,7 +22,7 @@ const User = {
       if (!node) {
         return cb(null, false, {message: 'User does not exist'});
       }
-      utils.comparePassword(candidatePW, node.n.data.password, function(err, isMatch) {
+      utils.comparePassword(candidatePW, node.password, function(err, isMatch) {
         if (err) {console.log('in heree'); return cb(err);}
         if (!isMatch) {
           return cb(null, false, { message: 'Wrong password'});
@@ -43,14 +47,13 @@ const User = {
             username: userInfo.username,
             password: hash 
           };
-          db.query('CREATE (n:User {username: {username}, password: {password}}) RETURN n', info, function (err, results) {
+          db.save(info, 'User', function(err, node) {
             if (err) { return cb(err); }
-            const id = results[0].n.id;
-            return cb(null, id);
-          })
+            return cb(null, node.id);
+          });
         })
         .catch(function (err) {cb(err);});
-    })
+    });
   }
 }
 

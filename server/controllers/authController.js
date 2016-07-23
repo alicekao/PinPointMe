@@ -18,7 +18,6 @@ module.exports = {
         return res.status(422).send({ error: 'Username already exists' });
       }
       const resp = {
-        id: newId,
         token: utils.generateToken(req.body.username)
       };
 

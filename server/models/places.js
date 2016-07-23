@@ -2,29 +2,34 @@ const db = require('../db/db');
 
 module.exports = {
   // data is an obj that has username, place lat/lng/ name/location/category
-  newPOI: function (data, cb) {
-    db.query(
-      'MATCH (user:User {username: {username}}) CREATE (user)-[:LIKES]->(place:Place {name: {name}, location: [{lat}, {lng}], category: {category}}) RETURN place', data, function (err, place) {
+  newPOI: function (userID, data, cb) {
+    console.log('data is: ', data);
+    db.save(data, 'Place', function(err, place) {
         if (err) {
           console.log('error: ', err);
           return cb(err);
         }
-        console.log('success!', place);
-        cb(null, place);
-      });
+        db.relate(userID, 'likes', place, {on: new Date()}, function(err, relationship) {
+          if (err) {return cb(err);}
+          console.log('success!', place, relationship);
+          cb(null, place);
+        });
+    });
   },
 
-  // username is a str
-  fetch: function (username, cb) {
-    db.query('MATCH (:User {username: {username}})-[:LIKES]->(places) RETURN places', { username: username }, function (err, places) {
-      if (err) { cb(err); }
-      else {
-        const converted = places.map(function (place) {
-          return place.places.data;
-        });
-        cb(null, converted);
-      }
-    })
+  // userID is a number
+  fetch: function (userID, cb) {
+    const cypher = `MATCH (n) `
+                  + `WHERE id(n)=${userID} `
+                  + `MATCH (n)-[:likes]->(p) `
+                  + `RETURN (p)`;
+    db.query(cypher, function(err, result) {
+      if (err) { 
+        console.log('error', err);
+        return cb(err); }
+      console.log('found results!', result);
+      cb(null, result)
+    });
   },
 
   // data is an obj with username and category name
