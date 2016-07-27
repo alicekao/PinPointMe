@@ -46,7 +46,7 @@ class mapContainer extends Component {
   
 
   submitNewPlace() {
-    const dummy = { name: 'chelsea park', lat: 40.75, lng: -74, category: 'park' };
+    const dummy = { name: 'empire', lat: 40.85, lng: -74, category: 'tourist' };
 
     this.props.addNewPlace(dummy);
     const newLatLng = new google.maps.LatLng(40.75, -74);

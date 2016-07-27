@@ -5,7 +5,6 @@ module.exports = {
   newPOI: function (userID, category, data, cb) {
     db.save(data, 'Place', function (err, place) {
       if (err) { return cb(err); }
-
       // Create new category and relate place to it
       db.save({ categoryName: category }, 'Category', function (err, category) {
         if (err) { return cb(err); }
