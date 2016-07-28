@@ -33488,10 +33488,6 @@
 	      var lat = data.lat;
 	      var lng = data.lng;
 	      var name = data.name;
-	      var vicinity = data.vicinity;
-	      var address = data.formatted_address;
-	      var category = data.types;
-	      var google_id = data.place_id;
 
 	      var position = lat ? new google.maps.LatLng(lat, lng) : geometry.location;
 
@@ -33506,25 +33502,27 @@
 	        _this2.state.infoWindow.setContent(window);
 	        _this2.state.infoWindow.open(map, marker);
 	        document.getElementById('save-location').addEventListener('click', function () {
-	          var formattedData = {
-	            name: name,
-	            lat: position.lat(),
-	            lng: position.lng(),
-	            google_id: google_id,
-	            category: category,
-	            address: address,
-	            vicinity: vicinity
-	          };
-	          _this2.submitNewPlace(formattedData, position);
-	          console.log('data to be sent is: ', formattedData);
+	          _this2.submitNewPlace(data, position);
 	        });
 	      });
 	    }
 	  }, {
 	    key: 'submitNewPlace',
-	    value: function submitNewPlace(formattedObj, mapPosition) {
+	    value: function submitNewPlace(data, mapPosition) {
+	      var vicinity = data.vicinity;
+	      var address = data.formatted_address;
+	      var category = data.types;
+	      var google_id = data.place_id;
+	      var name = data.name;
+	      var location = data.geometry.location;
+
+	      var formattedObj = {
+	        vicinity: vicinity, address: address, category: category, google_id: google_id, name: name,
+	        lat: location.lat(),
+	        lng: location.lng()
+	      };
 	      this.props.addNewPlace(formattedObj);
-	      console.log('added!');
+	      console.log('added!', formattedObj);
 	    }
 	  }, {
 	    key: 'render',

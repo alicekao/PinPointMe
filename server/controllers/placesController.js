@@ -15,7 +15,6 @@ module.exports = {
 
 
   fetchByUser: function (req, res) {
-    console.log('req in controler', req.user);
     const id = req.user.id;
     Places.fetch(id, function (err, result) {
       if (err) { return res.send(err); }

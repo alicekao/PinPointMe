@@ -47,7 +47,6 @@ const User = {
           };
           db.save(info, 'User', function (err, node) {
             if (err) { return cb(err); }
-            console.log('new user is: ', node);
             return cb(null, node.id);
           });
         })

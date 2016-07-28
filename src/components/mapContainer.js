@@ -23,7 +23,7 @@ class mapContainer extends Component {
   }
 
   setMarker(data, map) {
-    const { geometry, lat, lng, name, vicinity, formatted_address: address, types: category, place_id: google_id } = data;
+    const { geometry, lat, lng, name } = data;
     const position = lat ? new google.maps.LatLng(lat, lng) : geometry.location;
 
     const marker = new google.maps.Marker({
@@ -37,26 +37,22 @@ class mapContainer extends Component {
       this.state.infoWindow.setContent(window);
       this.state.infoWindow.open(map, marker);
       document.getElementById('save-location').addEventListener('click', () => {
-        const formattedData = {
-          name,
-          lat: position.lat(),
-          lng: position.lng(),
-          google_id,
-          category,
-          address,
-          vicinity
-        };
-        this.submitNewPlace(formattedData, position)
-        console.log('data to be sent is: ', formattedData);
+        this.submitNewPlace(data, position)
       });
     });
 
   }
 
 
-  submitNewPlace(formattedObj, mapPosition) {
+  submitNewPlace(data, mapPosition) {
+    const { vicinity, formatted_address: address, types: category, place_id: google_id, name, geometry: {location}} = data;
+    const formattedObj = {
+      vicinity, address, category, google_id, name, 
+      lat: location.lat(), 
+      lng: location.lng()
+    };
     this.props.addNewPlace(formattedObj);
-    console.log('added!');
+    console.log('added!', formattedObj);
   }
 
   render() {
