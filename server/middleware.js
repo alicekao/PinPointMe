@@ -6,9 +6,11 @@ const passport = require('./services/passport');
 
 const authRoutes = require('./routes/authRoutes');
 const placesRoutes = require('./routes/placesRoutes');
+const categoriesRoutes = require('./routes/categoriesRoutes');
 
 const authRouter = express.Router();
 const placesRouter = express.Router();
+const categoriesRouter = express.Router();
 
 module.exports = function (app) {
   if (process.env.NODE_ENV !== 'production') {
@@ -22,6 +24,7 @@ module.exports = function (app) {
 
   app.use('/auth', authRouter);
   app.use('/api/places', placesRouter);
+  app.use('/api/categories', categoriesRouter);
 
   app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
@@ -30,4 +33,5 @@ module.exports = function (app) {
 
   authRoutes(authRouter);
   placesRoutes(placesRouter);
+  categoriesRoutes(categoriesRouter);
 };

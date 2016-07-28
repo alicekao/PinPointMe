@@ -19,6 +19,7 @@ class mapContainer extends Component {
   componentDidMount() {
     if (this.props.isAuth) {
       this.props.fetchPlaces();
+      this.props.fetchUserCategories();
     }
   }
 
@@ -74,7 +75,7 @@ function mapStateToProps(state) {
   return {
     map: state.map.mapInstance,
     isAuth: state.auth.isAuthenticated,
-    places: state.map.places
+    places: state.map.places,
   }
 }
 

@@ -31565,6 +31565,7 @@
 	exports.authError = authError;
 	exports.checkJWT = checkJWT;
 	exports.fetchPlaces = fetchPlaces;
+	exports.fetchUserCategories = fetchUserCategories;
 	exports.logoutUser = logoutUser;
 	exports.setMap = setMap;
 	exports.signinUser = signinUser;
@@ -31634,6 +31635,15 @@
 	  };
 	}
 
+	function fetchUserCategories() {
+	  return function (dispatch) {
+	    _axios2.default.get('/api/categories/fetchByUser', createAuthHeader()).then(function (resp) {
+	      console.log(resp);
+	    }).catch(function (err) {
+	      console.log("error: ", err);
+	    });
+	  };
+	}
 	// return dispatch => {
 	//   axios.post('https://www.googleapis.com/geolocation/v1/geolocate?key='+geolocateKey)
 	//   .then(resp => {
@@ -33477,6 +33487,7 @@
 	    value: function componentDidMount() {
 	      if (this.props.isAuth) {
 	        this.props.fetchPlaces();
+	        this.props.fetchUserCategories();
 	      }
 	    }
 	  }, {

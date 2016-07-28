@@ -20,16 +20,5 @@ module.exports = {
       if (err) { return res.send(err); }
       res.send(result);
     });
-  },
-
-  addCategory: function (req, res) {
-    const data = {
-      username: req.user.username,
-      name: req.body.name
-    };
-    Places.addCategory(data, function (err, category) {
-      if (err) { return res.send(err); }
-      res.send(category);
-    });
   }
 }

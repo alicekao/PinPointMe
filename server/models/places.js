@@ -1,18 +1,5 @@
 const db = require('../db/db');
-
-function saveCategory(category, place, userID) {
-  db.save({ categoryName: category }, 'Category', function (err, category) {
-    if (err) { return cb(err); }
-    db.relate(place, 'typeof', category, null, function (err, rltnshp) {
-      if (err) { return cb(err); }
-    });
-
-    // Relate user to newly created category
-    db.relate(userID, 'hasCategory', category, null, function (err, rltnshp) {
-      if (err) { return cb(err); }
-    });
-  });
-}
+const Category = require('./category');
 
 module.exports = {
   // category is an array of categories
@@ -22,7 +9,7 @@ module.exports = {
       if (err) { return cb(err); }
       // Create new category and relate place and user to it
       category.forEach(category => {
-        saveCategory(category, place, userID)
+        Category.saveCategory(category, place, userID, cb)
       });
 
       // Relate user to newly created place
@@ -33,7 +20,7 @@ module.exports = {
     });
   },
 
-  // Fetches all places a user likes using the userID is a number
+  // Fetches all places a user likes using the userID (number)
   fetch: function (userID, cb) {
     const cypher = `MATCH (n) `
       + `WHERE id(n)=${userID} `
@@ -47,14 +34,5 @@ module.exports = {
       console.log('found results!', result);
       cb(null, result)
     });
-  },
-
-  // data is an obj with username and category name
-  addCategory: function (data, cb) {
-    console.log('data in here is: ', data);
-    db.query('MATCH (n:User {username: {username}}) CREATE (n)-[:HASCATEGORY]->(c:Category {name: {name}}) RETURN c', data, function (err, category) {
-      if (err) { return cb(err); }
-      cb(null, category);
-    });
   }
-};
+}

@@ -68,6 +68,17 @@ export function fetchPlaces() {
   }
 }
 
+export function fetchUserCategories() {
+  return dispatch => {
+    axios.get('/api/categories/fetchByUser', createAuthHeader())
+    .then(resp => {
+      console.log(resp);
+    })
+    .catch(err => {
+      console.log("error: ", err);
+    })
+  }
+}
 // return dispatch => {
 //   axios.post('https://www.googleapis.com/geolocation/v1/geolocate?key='+geolocateKey)
 //   .then(resp => {
@@ -91,7 +102,6 @@ function onSignIn(token) {
     browserHistory.push('/');
   }
 }
-
 
 export function setMap(map) {
   return {
