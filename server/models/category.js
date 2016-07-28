@@ -1,6 +1,17 @@
 const db = require('../db/db');
 
 module.exports = {
+  findOneCategory = function (userID, category, cb) {
+    const cypher = `MATCH (n) `
+      + `WHERE id(n)=${userID} `
+      + `MATCH (n)-[:hasCategory]->(c:Category) `
+      + `RETURN c`;
+    db.query(cypher, function (err, category) {
+      if (err) { return cb(err); }
+      cb(null, category);
+    });
+  },
+
   saveCategory: function (category, place, userID, cb) {
     db.save({ categoryName: category }, 'Category', function (err, category) {
       if (err) { return cb(err); }
