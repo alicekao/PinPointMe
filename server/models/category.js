@@ -19,13 +19,15 @@ module.exports = {
     db.relationships(userID, 'out', 'hasCategory', function (err, rltnshps) {
       if (err) { return cb(err); }
       const categories = [];
-      rltnshps.forEach(function (rltnshp) {
+      rltnshps.forEach(function (rltnshp, i) {
         db.read(rltnshp.end, function (err, node) {
           if (err) { return cb(err); }
           categories.push(node.categoryName);
+          if (i === rltnshps.length - 1) {
+            cb(null, categories);
+          }
         });
       });
-      cb(null, categories);
     });
   }
 }
