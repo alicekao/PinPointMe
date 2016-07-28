@@ -17,9 +17,7 @@ const jwtOptions = {
 };
 
 const jwtLogin = new JwtStrategy(jwtOptions, function (payload, done) {
-  console.log('in passport', payload);
   User.findOne({ username: payload.sub }, function (err, user) {
-    console.log('in passport', err, user);
     if (err) { return done(err); }
     if (!user) { return done(null, false); }
     return done(null, user);

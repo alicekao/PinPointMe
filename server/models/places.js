@@ -2,14 +2,20 @@ const db = require('../db/db');
 const Category = require('./category');
 
 module.exports = {
-  // category is an array of categories
+  // tyepof category: arr
   // data is an obj that has place name, lat, lng, google_id, category, address, vicinity
-  newPOI: function (userID, category, data, cb) {
+  newPOI: function (userID, categories, data, cb) {
     db.save(data, 'Place', function (err, place) {
       if (err) { return cb(err); }
       // Create new category and relate place and user to it
-      category.forEach(category => {
-        Category.saveCategory(category, place, userID, cb)
+      categories.forEach(function(category, i) {
+        if (i === categories.length-1) {
+          Category.saveCategory(category, place, userID, cb)
+        } else {
+          Category.saveCategory(category, place, userID, function(err, res) {
+            if (err) {cb(err);}
+          })
+        }
       });
 
       // Relate user to newly created place
@@ -20,7 +26,7 @@ module.exports = {
     });
   },
 
-  // Fetches all places a user likes using the userID (number)
+  // Fetches all places a user likes using the userID
   fetch: function (userID, cb) {
     const cypher = `MATCH (n) `
       + `WHERE id(n)=${userID} `
@@ -31,7 +37,6 @@ module.exports = {
         console.log('error', err);
         return cb(err);
       }
-      console.log('found results!', result);
       cb(null, result)
     });
   }
