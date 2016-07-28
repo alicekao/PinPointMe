@@ -23,38 +23,40 @@ class mapContainer extends Component {
   }
 
   setMarker(data, map) {
-    const { location, name } = data;
-    const position = Array.isArray(location) ? new google.maps.LatLng(location[0], location[1]) : location;
+    const { geometry, lat, lng, name, vicinity, formatted_address: address, types: category, place_id: google_id } = data;
+    const position = lat ? new google.maps.LatLng(lat, lng) : geometry.location;
 
     const marker = new google.maps.Marker({
       position,
       map
     });
 
+    const window = `${name}: <button id="save-location">save</button>`
+
     marker.addListener('click', () => {
-      this.state.infoWindow.setContent(name);
+      this.state.infoWindow.setContent(window);
       this.state.infoWindow.open(map, marker);
+      document.getElementById('save-location').addEventListener('click', () => {
+        const formattedData = {
+          name,
+          lat: position.lat(),
+          lng: position.lng(),
+          google_id,
+          category,
+          address,
+          vicinity
+        };
+        this.submitNewPlace(formattedData, position)
+        console.log('data to be sent is: ', formattedData);
+      });
     });
 
   }
-  
-  componentWillReceiveProps(nextProps) {
-    nextProps.places.forEach(place => {
-      this.setMarker(place, nextProps.map);
-    })
-  }
-  
 
-  submitNewPlace() {
-    const dummy = { name: 'empire', lat: 40.85, lng: -74, category: 'tourist' };
 
-    this.props.addNewPlace(dummy);
-    const newLatLng = new google.maps.LatLng(40.75, -74);
-    const marker = new google.maps.Marker({
-      position: newLatLng,
-      title: 'chelsea park'
-    });
-    marker.setMap(this.props.map);
+  submitNewPlace(formattedObj, mapPosition) {
+    this.props.addNewPlace(formattedObj);
+    console.log('added!');
   }
 
   render() {

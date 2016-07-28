@@ -11,7 +11,10 @@ class Map extends Component {
           zoom: 14
         });
         this.props.setMap(map);
-        this.addAutocomplete(map)
+        this.addAutocomplete(map);
+        this.props.places.forEach(place=>{
+          this.props.setMarker(place, map)
+        })
       }
     });
   }
@@ -46,9 +49,10 @@ class Map extends Component {
         map.setCenter(foundPlace.geometry.location);
         map.setZoom(17);
       }
+      console.log(foundPlace);
 
       // Set marker on map
-      this.props.setMarker({location: foundPlace.geometry.location, name: foundPlace.name}, map);
+      this.props.setMarker(foundPlace, map);
       // foundMarker.set
     });
   }

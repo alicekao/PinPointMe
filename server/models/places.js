@@ -1,21 +1,28 @@
 const db = require('../db/db');
 
+function saveCategory(category, place, userID) {
+  db.save({ categoryName: category }, 'Category', function (err, category) {
+    if (err) { return cb(err); }
+    db.relate(place, 'typeof', category, null, function (err, rltnshp) {
+      if (err) { return cb(err); }
+    });
+
+    // Relate user to newly created category
+    db.relate(userID, 'hasCategory', category, null, function (err, rltnshp) {
+      if (err) { return cb(err); }
+    });
+  });
+}
+
 module.exports = {
-  // data is an obj that has place lat/lng/ name/location/category
+  // category is an array of categories
+  // data is an obj that has place name, lat, lng, google_id, category, address, vicinity
   newPOI: function (userID, category, data, cb) {
     db.save(data, 'Place', function (err, place) {
       if (err) { return cb(err); }
-      // Create new category and relate place to it
-      db.save({ categoryName: category }, 'Category', function (err, category) {
-        if (err) { return cb(err); }
-        db.relate(place, 'typeof', category, null, function (err, rltnshp) {
-          if (err) { return cb(err); }
-        });
-
-        // Relate user to newly created category
-        db.relate(userID, 'hasCategory', category, null, function (err, rltnshp) {
-          if (err) { return cb(err); }
-        })
+      // Create new category and relate place and user to it
+      category.forEach(category => {
+        saveCategory(category, place, userID)
       });
 
       // Relate user to newly created place

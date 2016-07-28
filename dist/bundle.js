@@ -31599,13 +31599,8 @@
 	}
 	// data is an obj with place: name, lat, lng, category
 	function addNewPlace(data) {
-	  var name = data.name;
-	  var lat = data.lat;
-	  var lng = data.lng;
-	  var category = data.category;
-
 	  return function (dispatch) {
-	    _axios2.default.post('/api/places/new', { name: name, lat: lat, lng: lng, category: category }, createAuthHeader()).then(function (resp) {
+	    _axios2.default.post('/api/places/new', data, createAuthHeader()).then(function (resp) {
 	      console.log('response from server is: ', resp.data);
 	    }).catch(function (err) {
 	      console.log('Error: ', err);
@@ -33489,42 +33484,47 @@
 	    value: function setMarker(data, map) {
 	      var _this2 = this;
 
-	      var location = data.location;
+	      var geometry = data.geometry;
+	      var lat = data.lat;
+	      var lng = data.lng;
 	      var name = data.name;
+	      var vicinity = data.vicinity;
+	      var address = data.formatted_address;
+	      var category = data.types;
+	      var google_id = data.place_id;
 
-	      var position = Array.isArray(location) ? new google.maps.LatLng(location[0], location[1]) : location;
+	      var position = lat ? new google.maps.LatLng(lat, lng) : geometry.location;
 
 	      var marker = new google.maps.Marker({
 	        position: position,
 	        map: map
 	      });
 
-	      marker.addListener('click', function () {
-	        _this2.state.infoWindow.setContent(name);
-	        _this2.state.infoWindow.open(map, marker);
-	      });
-	    }
-	  }, {
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      var _this3 = this;
+	      var window = name + ': <button id="save-location">save</button>';
 
-	      nextProps.places.forEach(function (place) {
-	        _this3.setMarker(place, nextProps.map);
+	      marker.addListener('click', function () {
+	        _this2.state.infoWindow.setContent(window);
+	        _this2.state.infoWindow.open(map, marker);
+	        document.getElementById('save-location').addEventListener('click', function () {
+	          var formattedData = {
+	            name: name,
+	            lat: position.lat(),
+	            lng: position.lng(),
+	            google_id: google_id,
+	            category: category,
+	            address: address,
+	            vicinity: vicinity
+	          };
+	          _this2.submitNewPlace(formattedData, position);
+	          console.log('data to be sent is: ', formattedData);
+	        });
 	      });
 	    }
 	  }, {
 	    key: 'submitNewPlace',
-	    value: function submitNewPlace() {
-	      var dummy = { name: 'empire', lat: 40.85, lng: -74, category: 'tourist' };
-
-	      this.props.addNewPlace(dummy);
-	      var newLatLng = new google.maps.LatLng(40.75, -74);
-	      var marker = new google.maps.Marker({
-	        position: newLatLng,
-	        title: 'chelsea park'
-	      });
-	      marker.setMap(this.props.map);
+	    value: function submitNewPlace(formattedObj, mapPosition) {
+	      this.props.addNewPlace(formattedObj);
+	      console.log('added!');
 	    }
 	  }, {
 	    key: 'render',
@@ -33681,12 +33681,17 @@
 
 	      this.geolocate(function (pos) {
 	        if (pos) {
-	          var map = new google.maps.Map(document.getElementById('map'), {
-	            center: pos || { lat: 40.75, lng: -73.99 },
-	            zoom: 14
-	          });
-	          _this2.props.setMap(map);
-	          _this2.addAutocomplete(map);
+	          (function () {
+	            var map = new google.maps.Map(document.getElementById('map'), {
+	              center: pos || { lat: 40.75, lng: -73.99 },
+	              zoom: 14
+	            });
+	            _this2.props.setMap(map);
+	            _this2.addAutocomplete(map);
+	            _this2.props.places.forEach(function (place) {
+	              _this2.props.setMarker(place, map);
+	            });
+	          })();
 	        }
 	      });
 	    }
@@ -33726,9 +33731,10 @@
 	          map.setCenter(foundPlace.geometry.location);
 	          map.setZoom(17);
 	        }
+	        console.log(foundPlace);
 
 	        // Set marker on map
-	        _this3.props.setMarker({ location: foundPlace.geometry.location, name: foundPlace.name }, map);
+	        _this3.props.setMarker(foundPlace, map);
 	        // foundMarker.set
 	      });
 	    }

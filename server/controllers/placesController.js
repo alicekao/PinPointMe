@@ -3,13 +3,11 @@ const User = require('../models/user');
 
 module.exports = {
   addNew: function (req, res) {
-    const data = {
-      name: req.body.name,
-      lat: req.body.lat,
-      lng: req.body.lng
-    };
+    const category = req.body.category;
+    const data = req.body;
+    delete data['category'];
 
-    Places.newPOI(req.user.id, req.body.category, data, function (err, result) {
+    Places.newPOI(req.user.id, category, data, function (err, result) {
       if (err) { return res.send(err); }
       res.send(result);
     })

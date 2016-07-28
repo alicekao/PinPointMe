@@ -29,9 +29,8 @@ export function addNewCategory(category) {
 }
 // data is an obj with place: name, lat, lng, category
 export function addNewPlace(data) {
-  const { name, lat, lng, category } = data;
   return dispatch => {
-    axios.post('/api/places/new', { name, lat, lng, category }, createAuthHeader())
+    axios.post('/api/places/new', data, createAuthHeader())
       .then(resp => {
         console.log('response from server is: ', resp.data);
       })
