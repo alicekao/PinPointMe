@@ -19,7 +19,6 @@ class mapContainer extends Component {
   componentDidMount() {
     if (this.props.isAuth) {
       this.props.fetchPlaces();
-      this.props.fetchUserCategories();
     }
   }
 

@@ -11,7 +11,7 @@ class App extends Component {
 
   render() {
     return (
-      <div style={{ height: '100%' }}>
+      <div className="container-fluid" style={{ height: '100%' }}>
         <Header />
         {this.props.children}
       </div>

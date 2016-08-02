@@ -31078,6 +31078,7 @@
 	var DEAUTH_USER = exports.DEAUTH_USER = 'deauth_user';
 	var AUTH_ERROR = exports.AUTH_ERROR = 'auth_error';
 	var UPDATE_PLACES = exports.UPDATE_PLACES = 'update_places';
+	var UPDATE_CATEGORIES = exports.UPDATE_CATEGORIES = 'update_categories';
 
 /***/ },
 /* 303 */
@@ -31100,6 +31101,8 @@
 	      return _extends({}, state, { mapInstance: action.payload });
 	    case _types.UPDATE_PLACES:
 	      return _extends({}, state, { places: [].concat(_toConsumableArray(state.places), _toConsumableArray(action.payload)) });
+	    case _types.UPDATE_CATEGORIES:
+	      return _extends({}, state, { categories: action.payload });
 	    default:
 	      return state;
 	  }
@@ -31111,7 +31114,8 @@
 
 	var initialState = {
 	  mapInstance: null,
-	  places: []
+	  places: [],
+	  categories: []
 	};
 
 /***/ },
@@ -31430,7 +31434,7 @@
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
-	        { style: { height: '100%' } },
+	        { className: 'container-fluid', style: { height: '100%' } },
 	        _react2.default.createElement(_header2.default, null),
 	        this.props.children
 	      );
@@ -31571,6 +31575,7 @@
 	exports.signinUser = signinUser;
 	exports.signupUser = signupUser;
 	exports.updatePlaces = updatePlaces;
+	exports.updateCategories = updateCategories;
 
 	var _axios = __webpack_require__(309);
 
@@ -31638,7 +31643,8 @@
 	function fetchUserCategories() {
 	  return function (dispatch) {
 	    _axios2.default.get('/api/categories/fetchByUser', createAuthHeader()).then(function (resp) {
-	      console.log(resp);
+	      dispatch(updateCategories(resp.data));
+	      console.log('user categories: ', resp);
 	    }).catch(function (err) {
 	      console.log("error: ", err);
 	    });
@@ -31707,6 +31713,13 @@
 	  return {
 	    type: _types.UPDATE_PLACES,
 	    payload: placesArr
+	  };
+	}
+
+	function updateCategories(categoriesArr) {
+	  return {
+	    type: _types.UPDATE_CATEGORIES,
+	    payload: categoriesArr
 	  };
 	}
 
@@ -33416,13 +33429,9 @@
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'container' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'row' },
-	          _react2.default.createElement(_sidebar2.default, null),
-	          _react2.default.createElement(_mapContainer2.default, null)
-	        )
+	        { className: 'row' },
+	        _react2.default.createElement(_sidebar2.default, null),
+	        _react2.default.createElement(_mapContainer2.default, null)
 	      );
 	    }
 	  }]);
@@ -33494,7 +33503,6 @@
 	    value: function componentDidMount() {
 	      if (this.props.isAuth) {
 	        this.props.fetchPlaces();
-	        this.props.fetchUserCategories();
 	      }
 	    }
 	  }, {
@@ -33742,7 +33750,7 @@
 	        }
 	        if (foundPlace.geometry.viewport) {
 	          map.fitBounds(foundPlace.geometry.viewport);
-	          map.setZoom(15);
+	          map.setZoom(17);
 	        } else {
 	          map.setCenter(foundPlace.geometry.location);
 	          map.setZoom(17);
@@ -33812,12 +33820,40 @@
 	  }
 
 	  _createClass(SideBar, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.props.fetchUserCategories();
+	    }
+	  }, {
+	    key: 'renderCategories',
+	    value: function renderCategories() {
+	      if (!this.props.categories.length) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          'Fetching'
+	        );
+	      }
+	      return this.props.categories.map(function (cat) {
+	        return _react2.default.createElement(
+	          'li',
+	          { className: 'list-group-item', key: cat.id },
+	          cat.categoryName
+	        );
+	      });
+	      // return list;
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'col-md-3' },
-	        'Categories:',
+	        _react2.default.createElement(
+	          'ul',
+	          { className: 'list-group' },
+	          this.renderCategories()
+	        ),
 	        _react2.default.createElement(
 	          'button',
 	          { onClick: this.props.addNewCategory },
@@ -33830,7 +33866,13 @@
 	  return SideBar;
 	}(_react.Component);
 
-	exports.default = (0, _reactRedux.connect)(null, actions)(SideBar);
+	function mapStateToProps(state) {
+	  return {
+	    categories: state.map.categories
+	  };
+	}
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, actions)(SideBar);
 
 /***/ }
 /******/ ]);

@@ -5,11 +5,9 @@ import SideBar from './sidebar';
 class Main extends Component {
   render() {
     return (
-      <div className="container">
-        <div className="row">
-          <SideBar/>
-          <MapContainer/>
-        </div>
+      <div className="row">
+        <SideBar/>
+        <MapContainer/>
       </div>
     );
   }

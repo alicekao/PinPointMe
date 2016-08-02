@@ -44,19 +44,27 @@ var Category = {
 
   // Fetch all categories for a user. tyeof userID: num
   fetchByUser: function (userID, cb) {
-    db.relationships(userID, 'out', 'hasCategory', function (err, rltnshps) {
-      if (err) { return cb(err); }
-      const categories = [];
-      rltnshps.forEach(function (rltnshp, i) {
-        db.read(rltnshp.end, function (err, node) {
-          if (err) { return cb(err); }
-          categories.push(node.categoryName);
-          if (i === rltnshps.length - 1) {
-            cb(null, categories);
-          }
-        });
-      });
+    const cypher = 
+    `MATCH (n:User)-[:hasCategory]->(c:Category) `
+    + `WHERE id(n)=${userID} `
+    + `RETURN (c)`;
+    db.query(cypher, function(err, categories) {
+      if (err) { return cb(err);}
+      cb(null, categories);
     });
+    // db.relationships(userID, 'out', 'hasCategory', function (err, rltnshps) {
+    //   if (err) { return cb(err); }
+    //   const categories = [];
+    //   rltnshps.forEach(function (rltnshp, i) {
+    //     db.read(rltnshp.end, function (err, node) {
+    //       if (err) { return cb(err); }
+    //       categories.push(node.categoryName);
+    //       if (i === rltnshps.length - 1) {
+    //         cb(null, categories);
+    //       }
+    //     });
+    //   });
+    // });
   },
 
   relatePlaceToCategory: function(place, category, cb) {

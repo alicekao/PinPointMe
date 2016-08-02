@@ -6,7 +6,8 @@ import {
   AUTH_USER,
   DEAUTH_USER,
   AUTH_ERROR,
-  UPDATE_PLACES
+  UPDATE_PLACES,
+  UPDATE_CATEGORIES
 } from './types';
 
 function createAuthHeader() {
@@ -72,7 +73,8 @@ export function fetchUserCategories() {
   return dispatch => {
     axios.get('/api/categories/fetchByUser', createAuthHeader())
     .then(resp => {
-      console.log(resp);
+      dispatch(updateCategories(resp.data))
+      console.log('user categories: ', resp);
     })
     .catch(err => {
       console.log("error: ", err);
@@ -140,5 +142,12 @@ export function updatePlaces(placesArr) {
   return {
     type: UPDATE_PLACES,
     payload: placesArr
+  }
+}
+
+export function updateCategories(categoriesArr) {
+  return {
+    type: UPDATE_CATEGORIES,
+    payload: categoriesArr
   }
 }

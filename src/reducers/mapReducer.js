@@ -1,11 +1,13 @@
 import {
   SET_MAP,
-  UPDATE_PLACES
+  UPDATE_PLACES,
+  UPDATE_CATEGORIES
 } from '../actions/types';
 
 const initialState = {
   mapInstance: null,
-  places: []
+  places: [],
+  categories: []
 }
 
 export default function (state = initialState, action) {
@@ -14,6 +16,8 @@ export default function (state = initialState, action) {
       return {...state, mapInstance: action.payload };
     case UPDATE_PLACES:
       return {...state, places: [...state.places, ...action.payload] };
+    case UPDATE_CATEGORIES:
+      return {...state, categories: action.payload };
     default:
       return state;
   }

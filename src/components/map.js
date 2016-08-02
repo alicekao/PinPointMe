@@ -43,7 +43,7 @@ class Map extends Component {
       if (!foundPlace.geometry) {window.alert('Try a different place'); return;}
       if (foundPlace.geometry.viewport) {
         map.fitBounds(foundPlace.geometry.viewport);
-        map.setZoom(15);
+        map.setZoom(17);
       }
       else {
         map.setCenter(foundPlace.geometry.location);
