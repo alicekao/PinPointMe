@@ -1,4 +1,4 @@
-console.log('is production? ', process.env.NODE.ENV);
+console.log('is production? ', process.env.NODE_ENV);
 var db;
 if (process.env.GRAPHENEDB_URL) {
 
