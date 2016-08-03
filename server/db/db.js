@@ -1,6 +1,7 @@
-console.log('is production? ', process.env.NODE_ENV);
+const environment = process.env.NODE_ENV;
 var db;
-if (process.env.GRAPHENEDB_URL) {
+
+if (environment === 'production') {
 
   const url = require('url').parse(process.env.GRAPHENEDB_URL)
 
@@ -14,10 +15,11 @@ if (process.env.GRAPHENEDB_URL) {
   const connectionURL = 'http://localhost:7474';
   db = neo4j(connectionURL);
 }
+
 db.constraints.uniqueness.createIfNone('User', 'username', function (err, constraint) {
   if (err) { console.log('Error: ', err); }
   console.log('constraint created! ', constraint);
-})
+});
 
 module.exports = db;
 

@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({silent:true});
 const express = require('express');
 const http = require('http');
 const middleware = require('./server/middleware');
