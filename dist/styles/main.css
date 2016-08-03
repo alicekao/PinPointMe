@@ -19,4 +19,5 @@ div.container, div.row {
   height: 100%;
 }
 
-.pac-container { z-index: 10000 !important; }
+.pac-container { z-index: 10000000 !important;
+display: block !important; }
