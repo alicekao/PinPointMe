@@ -53,7 +53,6 @@ class Map extends Component {
 
       // Set marker on map
       this.props.setMarker(foundPlace, map);
-      // foundMarker.set
     });
   }
 

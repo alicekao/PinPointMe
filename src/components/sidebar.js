@@ -14,14 +14,14 @@ class SideBar extends Component {
     return this.props.categories.map(cat => {
       return <li className="list-group-item" key={cat.id}>{cat.categoryName}</li>
     });
-    // return list;
   }
 
   render() {
     return (
       <div className="col-md-3">
+        <h3>Categories</h3>
         <ul className="list-group">
-          {this.renderCategories()}
+          {this.renderCategories() }
         </ul>
         <button onClick={this.props.addNewCategory}>Add food</button>
       </div>

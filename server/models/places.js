@@ -4,18 +4,13 @@ const Category = require('./category');
 module.exports = {
   // tyepof category: arr
   // data is an obj that has place name, lat, lng, google_id, category, address, vicinity
-  newPOI: function (userID, categories, data, cb) {
+  newPOI: function (userID, category, data, cb) {
     db.save(data, 'Place', function (err, place) {
       if (err) { return cb(err); }
       // Create new category and relate place and user to it
-      categories.forEach(function(category, i) {
-        if (i === categories.length-1) {
-          Category.saveCategory(category, place, userID, cb)
-        } else {
-          Category.saveCategory(category, place, userID, function(err, res) {
-            if (err) {cb(err);}
-          })
-        }
+
+      Category.saveCategory(category, place, userID, function (err, res) {
+        if (err) { cb(err); }
       });
 
       // Relate user to newly created place

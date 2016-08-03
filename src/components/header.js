@@ -9,7 +9,7 @@ class Header extends Component {
 
     if (isAuth) {
       return (
-        <li className='nav-item'>
+        <li className='nav-item pull-right'>
           <a href="#" className='nav-link' onClick={logoutUser}>Sign out</a>
         </li>
       );
@@ -23,11 +23,13 @@ class Header extends Component {
 
   render() {
     return (
-      <nav className="navbar navbar-light">
-        <Link className='navbar-brand' to="/">PinPointMe</Link>
-        <ul className='nav navbar-nav'>
-          {this.renderToolbar() }
-        </ul>
+      <nav className="navbar navbar-light bg-faded navbar-fixed-top">
+        <div className="container">
+          <Link className='navbar-brand' to="/">PinPointMe</Link>
+          <ul className='nav navbar-nav'>
+            {this.renderToolbar() }
+          </ul>
+        </div>
       </nav>
     );
   }

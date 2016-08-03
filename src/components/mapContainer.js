@@ -31,23 +31,30 @@ class mapContainer extends Component {
       map
     });
 
-    const window = `${name}: <button id="save-location">save</button>`
+    const window = `<input
+    class="form-control"
+    id="user-category"
+    type="text"
+    placeholder="category"></input>
+    <button
+    class="btn btn-outline-primary" id="save-location">save</button> ${name}`
 
     marker.addListener('click', () => {
       this.state.infoWindow.setContent(window);
       this.state.infoWindow.open(map, marker);
       document.getElementById('save-location').addEventListener('click', () => {
-        this.submitNewPlace(data, position)
+        const userCategory = document.getElementById('user-category').value;
+        this.submitNewPlace(data, userCategory, position)
       });
     });
-
   }
 
 
-  submitNewPlace(data, mapPosition) {
+  submitNewPlace(data, userCategory, mapPosition) {
     const { vicinity, formatted_address: address, types: category, place_id: google_id, name, geometry: {location}} = data;
     const formattedObj = {
-      vicinity, address, category, google_id, name, 
+      vicinity, address, google_id, name,
+      category: userCategory, 
       lat: location.lat(), 
       lng: location.lng()
     };
