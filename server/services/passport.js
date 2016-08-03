@@ -6,7 +6,7 @@ const User = require('../models/user');
 const secret = process.env.SECRET;
 
 const localLogin = new LocalStrategy(
-  function (username, password, done) {
+ (username, password, done) => {
     User.checkCredentials(username, password, done);
   }
 );
@@ -16,8 +16,8 @@ const jwtOptions = {
   secretOrKey: secret
 };
 
-const jwtLogin = new JwtStrategy(jwtOptions, function (payload, done) {
-  User.findOne({ username: payload.sub }, function (err, user) {
+const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
+  User.findOne({ username: payload.sub }, (err, user) => {
     if (err) { return done(err); }
     if (!user) { return done(null, false); }
     return done(null, user);

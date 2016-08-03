@@ -2,41 +2,40 @@ const db = require('../db/db');
 
 var Category = {
   // Find one user's category by name. tyepof userID: num, typeof category: str
-  findOneCategory: function (userID, category, cb) {
+  findOneCategory: (userID, category, cb) => {
     console.log('category is', category);
     const cypher = `MATCH (n) `
       + `WHERE id(n)=${userID} `
       + `MATCH (n)-[:hasCategory]->(c:Category {categoryName:'${category}'}) `
       + `RETURN c`;
-    db.query(cypher, function (err, categories) {
+    db.query(cypher, (err, categories) => {
       if (err) { return cb(err); }
       console.log('In findone: ', category, categories);
       cb(null, categories[0]);
     });
   },
 
-  saveCategory: function (category, place, userID, cb) {
-    Category.findOneCategory(userID, category, function (err, existingCategory) {
+  saveCategory: (category, place, userID, cb) => {
+    Category.findOneCategory(userID, category, (err, existingCategory) => {
       if (err) { return cb(err); }
       if (!existingCategory) {
-        db.save({ categoryName: category }, 'Category', function (err, newCategory) {
+        db.save({ categoryName: category }, 'Category', (err, newCategory) => {
           if (err) { return cb(err); }
           // Relate place to newly created category
-          Category.relatePlaceToCategory(place, newCategory, function(err, cat) {
+          Category.relatePlaceToCategory(place, newCategory, (err, cat) => {
             if (err) { return cb(err); }
           });
           // Add category to user's category list
-          db.relate(userID, 'hasCategory', newCategory, null, function (err, rltnshp) {
-            if (err) { 
-              console.log('Error: ', err);
-              return cb(err); }
-            cb(null, existingCategory)
+          db.relate(userID, 'hasCategory', newCategory, null, (err, rltnshp) => {
+            if (err) { return cb(err); }
+            cb(null, newCategory, true)
           });
         });
       } else {
         // Relate place to existing category
-        Category.relatePlaceToCategory(place, existingCategory, function(err, cat) {
+        Category.relatePlaceToCategory(place, existingCategory, (err, cat) => {
           if (err) { return cb(err);}
+          cb(null, existingCategory, false);
         });
       }
     });

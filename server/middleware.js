@@ -12,7 +12,7 @@ const authRouter = express.Router();
 const placesRouter = express.Router();
 const categoriesRouter = express.Router();
 
-module.exports = function (app) {
+module.exports = app => {
   if (process.env.NODE_ENV !== 'production') {
     const morgan = require('morgan');
     app.use(morgan('dev'));
@@ -26,7 +26,7 @@ module.exports = function (app) {
   app.use('/api/places', placesRouter);
   app.use('/api/categories', categoriesRouter);
 
-  app.get('*', function (req, res) {
+  app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
   });
 

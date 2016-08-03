@@ -17,7 +17,7 @@
     ]
   },
   "engines": {
-    "node": "5.6.0"
+    "node": "6.0.0"
   },
   "repository": {
     "type": "git",

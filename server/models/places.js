@@ -7,16 +7,16 @@ module.exports = {
   newPOI: function (userID, category, data, cb) {
     db.save(data, 'Place', function (err, place) {
       if (err) { return cb(err); }
-      // Create new category and relate place and user to it
-
-      Category.saveCategory(category, place, userID, function (err, res) {
-        if (err) { cb(err); }
-      });
 
       // Relate user to newly created place
       db.relate(userID, 'likes', place, { on: new Date() }, function (err, relationship) {
         if (err) { return cb(err); }
-        cb(null, place);
+      });
+      // Create new category and relate place and user to it
+
+      Category.saveCategory(category, place, userID, (err, res, isNew) => {
+        if (err) { cb(err); }
+        cb(null, res, isNew);
       });
     });
   },

@@ -7,7 +7,8 @@ import {
   DEAUTH_USER,
   AUTH_ERROR,
   UPDATE_PLACES,
-  UPDATE_CATEGORIES
+  UPDATE_CATEGORIES,
+  ADD_TO_CATEGORY
 } from './types';
 
 function createAuthHeader() {
@@ -19,7 +20,7 @@ function createAuthHeader() {
 export function addNewCategory(category) {
   // hard coded for 'food'
   return dispatch => {
-    axios.post('/api/places/newCategory', {name: 'food'}, createAuthHeader())
+    axios.post('/api/places/newCategory', { name: 'food' }, createAuthHeader())
       .then(resp => {
         console.log('response from server is: ', resp.data);
       })
@@ -33,7 +34,10 @@ export function addNewPlace(data) {
   return dispatch => {
     axios.post('/api/places/new', data, createAuthHeader())
       .then(resp => {
-        console.log('response from server is: ', resp.data);
+        // resp.data is new category with categoryName, id, and isNew
+        if (resp.data.isNew) {
+          dispatch(addToCategories(resp.data));
+        }
       })
       .catch(err => {
         console.log('Error: ', err);
@@ -72,13 +76,13 @@ export function fetchPlaces() {
 export function fetchUserCategories() {
   return dispatch => {
     axios.get('/api/categories/fetchByUser', createAuthHeader())
-    .then(resp => {
-      dispatch(updateCategories(resp.data))
-      console.log('user categories: ', resp);
-    })
-    .catch(err => {
-      console.log("error: ", err);
-    })
+      .then(resp => {
+        dispatch(updateCategories(resp.data))
+        console.log('user categories: ', resp);
+      })
+      .catch(err => {
+        console.log("error: ", err);
+      })
   }
 }
 // return dispatch => {
@@ -149,5 +153,12 @@ export function updateCategories(categoriesArr) {
   return {
     type: UPDATE_CATEGORIES,
     payload: categoriesArr
+  }
+}
+
+export function addToCategories(category) {
+  return {
+    type: ADD_TO_CATEGORY,
+    payload: category
   }
 }

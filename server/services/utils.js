@@ -4,22 +4,22 @@ const jwt = require('jwt-simple');
 const secret = process.env.SECRET;
 
 module.exports = {
-  comparePassword: function(candidatePW, actualPW, cb) {
-    bcrypt.compare(candidatePW, actualPW, function(err, isMatch) {
-      if (err) { return cb(err);}
+  comparePassword: (candidatePW, actualPW, cb) => {
+    bcrypt.compare(candidatePW, actualPW, (err, isMatch) => {
+      if (err) { return cb(err); }
       cb(null, isMatch)
     })
   },
 
-  hashPW: function (password) {
+  hashPW: password => {
     return bcrypt.genSaltAsync(10)
-      .then(function (salt) {
+      .then(salt => {
         return bcrypt.hashAsync(password, salt, null)
       });
   },
 
-  generateToken: function(username) {
+  generateToken: username => {
     const timestamp = new Date().getTime();
-    return jwt.encode({iat: timestamp, sub: username}, secret);
+    return jwt.encode({ iat: timestamp, sub: username }, secret);
   }
 }

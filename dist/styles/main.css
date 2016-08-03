@@ -18,6 +18,3 @@ div.container, div.row {
 #map {
   height: 100%;
 }
-
-.pac-container { z-index: 10000000 !important;
-display: block !important; }
