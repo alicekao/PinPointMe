@@ -10,7 +10,8 @@ class mapContainer extends Component {
 
     this.state = {
       infoWindow: new google.maps.InfoWindow({
-        content: null
+        content: null,
+        maxWidth: 750
       })
     }
     this.setMarker = this.setMarker.bind(this);
@@ -31,16 +32,22 @@ class mapContainer extends Component {
       map
     });
 
-    const window = `<input
-    class="form-control"
-    id="user-category"
-    type="text"
-    placeholder="category"></input>
-    <button
-    class="btn btn-outline-primary" id="save-location">save</button> ${name}`
+    const iWindow = `<div id="i-window">
+    <form class="form-inline">
+      <div class="form-group">
+        <input
+          class="form-control"
+          id="user-category"
+          type="text"
+          placeholder="category">
+        </input>
+      </div>
+      <button type="submit" class="btn btn-outline-primary" id="save-location">save</button>
+    </form> ${name}</div>`
 
     marker.addListener('click', () => {
-      this.state.infoWindow.setContent(window);
+      this.state.infoWindow.setContent(iWindow);
+      this.state.infoWindow.setOptions({maxWidth: 750});
       this.state.infoWindow.open(map, marker);
       document.getElementById('save-location').addEventListener('click', () => {
         const userCategory = document.getElementById('user-category').value;

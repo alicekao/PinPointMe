@@ -31046,9 +31046,9 @@
 
 	  switch (action.type) {
 	    case _types.AUTH_USER:
-	      return _extends({}, state, { isAuthenticated: true });
+	      return _extends({}, state, { isAuthenticated: true, currUserId: action.payload });
 	    case _types.DEAUTH_USER:
-	      return _extends({}, state, { isAuthenticated: false });
+	      return _extends({}, state, { isAuthenticated: false, currUserId: null });
 	    case _types.AUTH_ERROR:
 	      return _extends({}, state, { error: action.payload });
 	  }
@@ -31058,7 +31058,7 @@
 	var _types = __webpack_require__(302);
 
 	var initialState = {
-	  currUser: null,
+	  currUserId: null,
 	  isAuthenticated: false,
 	  error: null
 	};
@@ -31573,6 +31573,7 @@
 	});
 	exports.addNewCategory = addNewCategory;
 	exports.addNewPlace = addNewPlace;
+	exports.addToCategories = addToCategories;
 	exports.authError = authError;
 	exports.checkJWT = checkJWT;
 	exports.fetchPlaces = fetchPlaces;
@@ -31583,7 +31584,7 @@
 	exports.signupUser = signupUser;
 	exports.updatePlaces = updatePlaces;
 	exports.updateCategories = updateCategories;
-	exports.addToCategories = addToCategories;
+	exports.filterPOIsByCategory = filterPOIsByCategory;
 
 	var _axios = __webpack_require__(309);
 
@@ -31623,6 +31624,13 @@
 	      console.log('Error: ', err);
 	      dispatch(authError(err));
 	    });
+	  };
+	}
+
+	function addToCategories(category) {
+	  return {
+	    type: _types.ADD_TO_CATEGORY,
+	    payload: category
 	  };
 	}
 
@@ -31677,10 +31685,10 @@
 	  return { type: _types.DEAUTH_USER };
 	}
 
-	function onSignIn(token) {
+	function onSignIn(data) {
 	  return function (dispatch) {
-	    localStorage.setItem('token', token);
-	    dispatch({ type: _types.AUTH_USER });
+	    localStorage.setItem('token', data.token);
+	    dispatch({ type: _types.AUTH_USER, payload: data.id });
 	    _reactRouter.browserHistory.push('/');
 	  };
 	}
@@ -31698,7 +31706,7 @@
 
 	  return function (dispatch) {
 	    _axios2.default.post('/auth/signin', { username: username, password: password }).then(function (resp) {
-	      dispatch(onSignIn(resp.data.token));
+	      dispatch(onSignIn(resp.data));
 	    }).catch(function (err) {
 	      console.log('Error: ', err);
 	      dispatch(authError(err));
@@ -31734,11 +31742,8 @@
 	  };
 	}
 
-	function addToCategories(category) {
-	  return {
-	    type: _types.ADD_TO_CATEGORY,
-	    payload: category
-	  };
+	function filterPOIsByCategory(category) {
+	  return {};
 	}
 
 /***/ },
@@ -33342,7 +33347,6 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      console.log('is authenticated? ', this.props.isAuthenticated);
 	      var _props = this.props;
 	      var handleSubmit = _props.handleSubmit;
 	      var _props$fields = _props.fields;
@@ -33509,7 +33513,8 @@
 
 	    _this.state = {
 	      infoWindow: new google.maps.InfoWindow({
-	        content: null
+	        content: null,
+	        maxWidth: 750
 	      })
 	    };
 	    _this.setMarker = _this.setMarker.bind(_this);
@@ -33540,10 +33545,11 @@
 	        map: map
 	      });
 
-	      var window = '<input\n    class="form-control"\n    id="user-category"\n    type="text"\n    placeholder="category"></input>\n    <button\n    class="btn btn-outline-primary" id="save-location">save</button> ' + name;
+	      var iWindow = '<div id="i-window">\n    <form class="form-inline">\n      <div class="form-group">\n        <input\n          class="form-control"\n          id="user-category"\n          type="text"\n          placeholder="category">\n        </input>\n      </div>\n      <button type="submit" class="btn btn-outline-primary" id="save-location">save</button>\n    </form> ' + name + '</div>';
 
 	      marker.addListener('click', function () {
-	        _this2.state.infoWindow.setContent(window);
+	        _this2.state.infoWindow.setContent(iWindow);
+	        _this2.state.infoWindow.setOptions({ maxWidth: 750 });
 	        _this2.state.infoWindow.open(map, marker);
 	        document.getElementById('save-location').addEventListener('click', function () {
 	          var userCategory = document.getElementById('user-category').value;

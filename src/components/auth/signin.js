@@ -9,7 +9,6 @@ class Signin extends Component {
   }
 
   render() {
-    console.log('is authenticated? ', this.props.isAuthenticated);
     const {handleSubmit, fields: {username, password}} = this.props;
 
     return (

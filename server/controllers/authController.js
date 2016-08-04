@@ -3,13 +3,15 @@ const utils = require('../services/utils');
 
 module.exports = {
   signin: (req, res) => {
-    res.send({token: utils.generateToken(req.body.username)});
+    res.send({token: utils.generateToken(req.body.username), id: req.user.id});
   },
 
   signup: (req, res) => {
+    const { username, password} = req.body;
+
     const data = {
-      username: req.body.username,
-      password: req.body.password
+      username,
+      password
     };
 
     User.signup(data, (err, newId) => {

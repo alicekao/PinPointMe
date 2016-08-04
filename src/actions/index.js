@@ -46,6 +46,13 @@ export function addNewPlace(data) {
   }
 }
 
+export function addToCategories(category) {
+  return {
+    type: ADD_TO_CATEGORY,
+    payload: category
+  }
+}
+
 export function authError(message) {
   return {
     type: AUTH_ERROR,
@@ -101,10 +108,10 @@ export function logoutUser() {
   return { type: DEAUTH_USER };
 }
 
-function onSignIn(token) {
+function onSignIn(data) {
   return dispatch => {
-    localStorage.setItem('token', token);
-    dispatch({ type: AUTH_USER });
+    localStorage.setItem('token', data.token);
+    dispatch({ type: AUTH_USER, payload: data.id });
     browserHistory.push('/');
   }
 }
@@ -120,7 +127,7 @@ export function signinUser({username, password}) {
   return dispatch => {
     axios.post('/auth/signin', { username, password })
       .then(resp => {
-        dispatch(onSignIn(resp.data.token));
+        dispatch(onSignIn(resp.data));
       })
       .catch(err => {
         console.log('Error: ', err);
@@ -156,9 +163,7 @@ export function updateCategories(categoriesArr) {
   }
 }
 
-export function addToCategories(category) {
+export function filterPOIsByCategory(category) {
   return {
-    type: ADD_TO_CATEGORY,
-    payload: category
   }
 }
