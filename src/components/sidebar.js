@@ -12,7 +12,12 @@ class SideBar extends Component {
       return <div>Fetching</div>
     }
     return this.props.categories.map(cat => {
-      return <li className="list-group-item" key={cat.id}>{cat.categoryName}</li>
+      return <a
+        href="#"
+        className="list-group-item list-group-item-action"
+        key={cat.id}>
+        {cat.categoryName} <span className="tag tag-default tag-pill pull-xs-right">{cat.num}</span>
+      </a>
     });
   }
 
@@ -20,9 +25,9 @@ class SideBar extends Component {
     return (
       <div className="col-md-3">
         <h3>Categories</h3>
-        <ul className="list-group">
+        <div className="list-group">
           {this.renderCategories() }
-        </ul>
+        </div>
         <button onClick={this.props.addNewCategory}>Add food</button>
       </div>
     );

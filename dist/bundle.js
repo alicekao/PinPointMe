@@ -33861,9 +33861,18 @@
 	      }
 	      return this.props.categories.map(function (cat) {
 	        return _react2.default.createElement(
-	          'li',
-	          { className: 'list-group-item', key: cat.id },
-	          cat.categoryName
+	          'a',
+	          {
+	            href: '#',
+	            className: 'list-group-item list-group-item-action',
+	            key: cat.id },
+	          cat.categoryName,
+	          ' ',
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'tag tag-default tag-pill pull-xs-right' },
+	            cat.num
+	          )
 	        );
 	      });
 	    }
@@ -33879,7 +33888,7 @@
 	          'Categories'
 	        ),
 	        _react2.default.createElement(
-	          'ul',
+	          'div',
 	          { className: 'list-group' },
 	          this.renderCategories()
 	        ),
