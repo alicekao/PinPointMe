@@ -8,7 +8,8 @@ import {
   AUTH_ERROR,
   UPDATE_PLACES,
   UPDATE_CATEGORIES,
-  ADD_TO_CATEGORY
+  ADD_TO_CATEGORY,
+  FILTER_CATEGORIES
 } from './types';
 
 function createAuthHeader() {
@@ -71,6 +72,7 @@ export function fetchPlaces() {
   return dispatch => {
     axios.get('/api/places/fetchAll', createAuthHeader())
       .then(resp => {
+        console.log('places are:', resp.data);
         dispatch(updatePlaces(resp.data));
       })
       .catch(err => {
@@ -165,5 +167,7 @@ export function updateCategories(categoriesArr) {
 
 export function filterPOIsByCategory(category) {
   return {
+    type: FILTER_CATEGORIES,
+    payload: category
   }
 }

@@ -6,3 +6,4 @@ export const AUTH_ERROR = 'auth_error';
 export const UPDATE_PLACES = 'update_places';
 export const UPDATE_CATEGORIES = 'update_categories';
 export const ADD_TO_CATEGORY = 'add_to_category';
+export const FILTER_CATEGORIES = 'filter_categories';

@@ -13,6 +13,7 @@ class SideBar extends Component {
     }
     return this.props.categories.map(cat => {
       return <a
+        onClick={()=>this.props.filterPOIsByCategory(cat.categoryName)}
         href="#"
         className="list-group-item list-group-item-action"
         key={cat.id}>

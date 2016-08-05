@@ -23,16 +23,20 @@ module.exports = {
 
   // Fetches all places a user likes using the userID
   fetch: function (userID, cb) {
-    const cypher = `MATCH (n) `
+    const cypher = `MATCH (n:User)-[:likes]->(p:Place)-[:typeof]->(c:Category) `
       + `WHERE id(n)=${userID} `
-      + `MATCH (n)-[:likes]->(p) `
-      + `RETURN (p)`;
+      + `RETURN p,c`;
     db.query(cypher, function (err, result) {
       if (err) {
         console.log('error', err);
         return cb(err);
       }
-      cb(null, result)
+      const mapped = result.map(item => {
+        item.p['category'] = item.c.categoryName;
+        item.p['categoryID'] = item.c.id;
+        return item.p;
+      });
+      cb(null, mapped)
     });
   }
 }

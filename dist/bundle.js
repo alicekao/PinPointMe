@@ -31080,6 +31080,7 @@
 	var UPDATE_PLACES = exports.UPDATE_PLACES = 'update_places';
 	var UPDATE_CATEGORIES = exports.UPDATE_CATEGORIES = 'update_categories';
 	var ADD_TO_CATEGORY = exports.ADD_TO_CATEGORY = 'add_to_category';
+	var FILTER_CATEGORIES = exports.FILTER_CATEGORIES = 'filter_categories';
 
 /***/ },
 /* 303 */
@@ -31106,6 +31107,11 @@
 	      return _extends({}, state, { categories: [].concat(_toConsumableArray(state.categories), [action.payload]) });
 	    case _types.UPDATE_CATEGORIES:
 	      return _extends({}, state, { categories: action.payload });
+	    case _types.FILTER_CATEGORIES:
+	      var filtered = state.places.filter(function (place) {
+	        return place.category === action.payload;
+	      });
+	      return _extends({}, state, { places: filtered });
 	    default:
 	      return state;
 	  }
@@ -31651,6 +31657,7 @@
 	function fetchPlaces() {
 	  return function (dispatch) {
 	    _axios2.default.get('/api/places/fetchAll', createAuthHeader()).then(function (resp) {
+	      console.log('places are:', resp.data);
 	      dispatch(updatePlaces(resp.data));
 	    }).catch(function (err) {
 	      console.log('Couldn\'t fetch places: ', err);
@@ -31743,7 +31750,10 @@
 	}
 
 	function filterPOIsByCategory(category) {
-	  return {};
+	  return {
+	    type: _types.FILTER_CATEGORIES,
+	    payload: category
+	  };
 	}
 
 /***/ },
@@ -33852,6 +33862,8 @@
 	  }, {
 	    key: 'renderCategories',
 	    value: function renderCategories() {
+	      var _this2 = this;
+
 	      if (!this.props.categories.length) {
 	        return _react2.default.createElement(
 	          'div',
@@ -33863,6 +33875,9 @@
 	        return _react2.default.createElement(
 	          'a',
 	          {
+	            onClick: function onClick() {
+	              return _this2.props.filterPOIsByCategory(cat.categoryName);
+	            },
 	            href: '#',
 	            className: 'list-group-item list-group-item-action',
 	            key: cat.id },
