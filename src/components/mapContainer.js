@@ -106,15 +106,15 @@ class mapContainer extends Component {
   render() {
     return (
       <div className="col-md-9" style={{ height: '100%' }}>
-        <button onClick={this.submitNewPlace.bind(this) }>Add place</button>
-        <Search />
+        {/*<button onClick={this.submitNewPlace.bind(this) }>Add place</button>*/}
+        <Search/>
         <Map
           setMarkers={this.setMarkersArr.bind(this) }
           places={this.props.places}
           infoWindow={this.props.infoWindow}
           setMarker={this.setMarker}
           map={this.props.map}
-          />
+        />
       </div>
     );
   }

@@ -6,9 +6,11 @@ class Search extends Component {
 
   render() {
     return (
-      <div>
-        <input id="search" placeholder="Enter a location"></input>
-        <button>
+      <div className="row" style={{height: '8%'}}>
+        <input className="col-md-10"
+          id="search"
+          placeholder="Enter a location"></input>
+        <button className="col-md-2">
           Search
         </button>
       </div>
