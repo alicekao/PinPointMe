@@ -33890,27 +33890,41 @@
 	      this.props.fetchUserCategories();
 	    }
 	  }, {
-	    key: 'renderCategories',
-	    value: function renderCategories() {
+	    key: 'renderSidebar',
+	    value: function renderSidebar() {
 	      var _this2 = this;
 
-	      if (!this.props.categories.length) {
-	        return _react2.default.createElement(
-	          'div',
-	          null,
-	          'Fetching'
-	        );
-	      }
-	      return this.props.categories.map(function (cat) {
-	        return _react2.default.createElement(_SideBarEntry2.default, {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'list-group' },
+	        _react2.default.createElement(_SideBarEntry2.default, {
 	          onClick: function onClick() {
-	            return _this2.props.filterPOIsByCategory(cat.categoryName);
+	            return _this2.props.filterPOIsByCategory(null);
 	          },
-	          name: cat.categoryName,
-	          key: cat.id,
-	          count: cat.num
+	          key: null,
+	          name: 'Show all',
+	          count: this.props.places.length
+	        }),
+	        this.renderExistingCategories()
+	      );
+	    }
+	  }, {
+	    key: 'renderExistingCategories',
+	    value: function renderExistingCategories() {
+	      var _this3 = this;
+
+	      if (this.props.categories.length) {
+	        return this.props.categories.map(function (cat) {
+	          return _react2.default.createElement(_SideBarEntry2.default, {
+	            onClick: function onClick() {
+	              return _this3.props.filterPOIsByCategory(cat.categoryName);
+	            },
+	            name: cat.categoryName,
+	            key: cat.id,
+	            count: cat.num
+	          });
 	        });
-	      });
+	      }
 	    }
 	  }, {
 	    key: 'render',
@@ -33923,11 +33937,7 @@
 	          null,
 	          'Categories'
 	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'list-group' },
-	          this.renderCategories()
-	        ),
+	        this.renderSidebar(),
 	        _react2.default.createElement(
 	          'button',
 	          { onClick: this.props.addNewCategory },
@@ -33942,7 +33952,8 @@
 
 	function mapStateToProps(state) {
 	  return {
-	    categories: state.map.categories
+	    categories: state.map.categories,
+	    places: state.map.places
 	  };
 	}
 
