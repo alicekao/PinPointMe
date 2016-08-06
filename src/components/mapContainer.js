@@ -71,7 +71,11 @@ class mapContainer extends Component {
       this.state.infoWindow.open(map, marker);
       document.getElementById('save-location').addEventListener('click', () => {
         const userCategory = document.getElementById('user-category').value;
-        this.submitNewPlace(data, userCategory, position)
+        this.submitNewPlace(data, userCategory, position, (added) => {
+          if (added) {
+            this.state.infoWindow.close();
+          }
+        });
       });
     });
 
@@ -79,7 +83,7 @@ class mapContainer extends Component {
   }
 
 
-  submitNewPlace(data, userCategory, mapPosition) {
+  submitNewPlace(data, userCategory, mapPosition, cb) {
     const { vicinity, formatted_address: address, types: category, place_id: google_id, name, geometry: {location}} = data;
     const formattedObj = {
       vicinity, address, google_id, name,
@@ -87,7 +91,7 @@ class mapContainer extends Component {
       lat: location.lat(), 
       lng: location.lng()
     };
-    this.props.addNewPlace(formattedObj);
+    this.props.addNewPlace(formattedObj, cb);
   }
 
   render() {

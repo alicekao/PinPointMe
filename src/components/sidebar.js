@@ -30,7 +30,7 @@ class SideBar extends Component {
           onClick={() => this.props.filterPOIsByCategory(cat.categoryName) }
           name={cat.categoryName}
           key={cat.id}
-          count={cat.num}
+          count={cat.count || 1}
           />
       });
     }

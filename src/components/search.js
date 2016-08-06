@@ -3,10 +3,6 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 
 class Search extends Component {
-  // componentWillUpdate(nextProps, nextState) {
-  //   console.log('next state is', nextProps);
-  // }
-  
 
   render() {
     return (
