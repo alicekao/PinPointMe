@@ -9,7 +9,8 @@ import {
 const initialState = {
   mapInstance: null,
   places: [],
-  categories: []
+  categories: [],
+  currFilter: null
 }
 
 export default function (state = initialState, action) {
@@ -23,10 +24,7 @@ export default function (state = initialState, action) {
     case UPDATE_CATEGORIES:
       return {...state, categories: action.payload };
     case FILTER_CATEGORIES:
-      const filtered = state.places.filter(place=>{
-        return place.category === action.payload;
-      });
-      return {...state, places: filtered};
+      return {...state, currFilter: action.payload};
     default:
       return state;
   }

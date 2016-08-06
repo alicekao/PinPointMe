@@ -12,7 +12,8 @@ class mapContainer extends Component {
       infoWindow: new google.maps.InfoWindow({
         content: null,
         maxWidth: 750
-      })
+      }),
+      markers: []
     }
     this.setMarker = this.setMarker.bind(this);
   }
@@ -21,6 +22,25 @@ class mapContainer extends Component {
     if (this.props.isAuth) {
       this.props.fetchPlaces();
     }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.state.markers.forEach(marker => {
+      marker.setMap(null);
+    });
+
+    const filteredPlaces = nextProps.currFilter ?this.props.places.filter(place => {
+      return place.category === nextProps.currFilter;
+    }) : this.props.places;
+
+    const newMarkers = filteredPlaces.map(place => {
+      return this.setMarker(place, this.props.map);
+    });
+    this.setState({markers: newMarkers});
+  }
+
+  setMarkersArr(arr) {
+    this.setState({markers: arr});
   }
 
   setMarker(data, map) {
@@ -54,6 +74,8 @@ class mapContainer extends Component {
         this.submitNewPlace(data, userCategory, position)
       });
     });
+
+    return marker;
   }
 
 
@@ -66,7 +88,6 @@ class mapContainer extends Component {
       lng: location.lng()
     };
     this.props.addNewPlace(formattedObj);
-    console.log('added!', formattedObj);
   }
 
   render() {
@@ -75,6 +96,7 @@ class mapContainer extends Component {
         <button onClick={this.submitNewPlace.bind(this) }>Add place</button>
         <Search />
         <Map
+          setMarkers={this.setMarkersArr.bind(this)}
           places={this.props.places}
           infoWindow={this.props.infoWindow}
           setMarker={this.setMarker}
@@ -87,6 +109,7 @@ class mapContainer extends Component {
 function mapStateToProps(state) {
   return {
     map: state.map.mapInstance,
+    currFilter: state.map.currFilter,
     isAuth: state.auth.isAuthenticated,
     places: state.map.places,
   }

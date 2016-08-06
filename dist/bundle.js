@@ -31108,10 +31108,7 @@
 	    case _types.UPDATE_CATEGORIES:
 	      return _extends({}, state, { categories: action.payload });
 	    case _types.FILTER_CATEGORIES:
-	      var filtered = state.places.filter(function (place) {
-	        return place.category === action.payload;
-	      });
-	      return _extends({}, state, { places: filtered });
+	      return _extends({}, state, { currFilter: action.payload });
 	    default:
 	      return state;
 	  }
@@ -31124,7 +31121,8 @@
 	var initialState = {
 	  mapInstance: null,
 	  places: [],
-	  categories: []
+	  categories: [],
+	  currFilter: null
 	};
 
 /***/ },
@@ -31584,13 +31582,13 @@
 	exports.checkJWT = checkJWT;
 	exports.fetchPlaces = fetchPlaces;
 	exports.fetchUserCategories = fetchUserCategories;
+	exports.filterPOIsByCategory = filterPOIsByCategory;
 	exports.logoutUser = logoutUser;
 	exports.setMap = setMap;
 	exports.signinUser = signinUser;
 	exports.signupUser = signupUser;
 	exports.updatePlaces = updatePlaces;
 	exports.updateCategories = updateCategories;
-	exports.filterPOIsByCategory = filterPOIsByCategory;
 
 	var _axios = __webpack_require__(309);
 
@@ -31676,6 +31674,13 @@
 	    });
 	  };
 	}
+
+	function filterPOIsByCategory(category) {
+	  return {
+	    type: _types.FILTER_CATEGORIES,
+	    payload: category
+	  };
+	}
 	// return dispatch => {
 	//   axios.post('https://www.googleapis.com/geolocation/v1/geolocate?key='+geolocateKey)
 	//   .then(resp => {
@@ -31746,13 +31751,6 @@
 	  return {
 	    type: _types.UPDATE_CATEGORIES,
 	    payload: categoriesArr
-	  };
-	}
-
-	function filterPOIsByCategory(category) {
-	  return {
-	    type: _types.FILTER_CATEGORIES,
-	    payload: category
 	  };
 	}
 
@@ -33525,7 +33523,8 @@
 	      infoWindow: new google.maps.InfoWindow({
 	        content: null,
 	        maxWidth: 750
-	      })
+	      }),
+	      markers: []
 	    };
 	    _this.setMarker = _this.setMarker.bind(_this);
 	    return _this;
@@ -33539,9 +33538,32 @@
 	      }
 	    }
 	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      var _this2 = this;
+
+	      this.state.markers.forEach(function (marker) {
+	        marker.setMap(null);
+	      });
+
+	      var filteredPlaces = nextProps.currFilter ? this.props.places.filter(function (place) {
+	        return place.category === nextProps.currFilter;
+	      }) : this.props.places;
+
+	      var newMarkers = filteredPlaces.map(function (place) {
+	        return _this2.setMarker(place, _this2.props.map);
+	      });
+	      this.setState({ markers: newMarkers });
+	    }
+	  }, {
+	    key: 'setMarkersArr',
+	    value: function setMarkersArr(arr) {
+	      this.setState({ markers: arr });
+	    }
+	  }, {
 	    key: 'setMarker',
 	    value: function setMarker(data, map) {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      var geometry = data.geometry;
 	      var lat = data.lat;
@@ -33558,14 +33580,16 @@
 	      var iWindow = '<div id="i-window">\n    <form class="form-inline">\n      <div class="form-group">\n        <input\n          class="form-control"\n          id="user-category"\n          type="text"\n          placeholder="category">\n        </input>\n      </div>\n      <button type="submit" class="btn btn-outline-primary" id="save-location">save</button>\n    </form> ' + name + '</div>';
 
 	      marker.addListener('click', function () {
-	        _this2.state.infoWindow.setContent(iWindow);
-	        _this2.state.infoWindow.setOptions({ maxWidth: 750 });
-	        _this2.state.infoWindow.open(map, marker);
+	        _this3.state.infoWindow.setContent(iWindow);
+	        _this3.state.infoWindow.setOptions({ maxWidth: 750 });
+	        _this3.state.infoWindow.open(map, marker);
 	        document.getElementById('save-location').addEventListener('click', function () {
 	          var userCategory = document.getElementById('user-category').value;
-	          _this2.submitNewPlace(data, userCategory, position);
+	          _this3.submitNewPlace(data, userCategory, position);
 	        });
 	      });
+
+	      return marker;
 	    }
 	  }, {
 	    key: 'submitNewPlace',
@@ -33584,7 +33608,6 @@
 	        lng: location.lng()
 	      };
 	      this.props.addNewPlace(formattedObj);
-	      console.log('added!', formattedObj);
 	    }
 	  }, {
 	    key: 'render',
@@ -33599,6 +33622,7 @@
 	        ),
 	        _react2.default.createElement(_search2.default, null),
 	        _react2.default.createElement(_map2.default, {
+	          setMarkers: this.setMarkersArr.bind(this),
 	          places: this.props.places,
 	          infoWindow: this.props.infoWindow,
 	          setMarker: this.setMarker
@@ -33613,6 +33637,7 @@
 	function mapStateToProps(state) {
 	  return {
 	    map: state.map.mapInstance,
+	    currFilter: state.map.currFilter,
 	    isAuth: state.auth.isAuthenticated,
 	    places: state.map.places
 	  };
@@ -33748,9 +33773,10 @@
 	            });
 	            _this2.props.setMap(map);
 	            _this2.addAutocomplete(map);
-	            _this2.props.places.forEach(function (place) {
-	              _this2.props.setMarker(place, map);
+	            var markers = _this2.props.places.map(function (place) {
+	              return _this2.props.setMarker(place, map);
 	            });
+	            _this2.props.setMarkers(markers);
 	          })();
 	        }
 	      });

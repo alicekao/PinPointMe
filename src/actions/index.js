@@ -94,6 +94,13 @@ export function fetchUserCategories() {
       })
   }
 }
+
+export function filterPOIsByCategory(category) {
+  return {
+    type: FILTER_CATEGORIES,
+    payload: category
+  }
+}
 // return dispatch => {
 //   axios.post('https://www.googleapis.com/geolocation/v1/geolocate?key='+geolocateKey)
 //   .then(resp => {
@@ -162,12 +169,5 @@ export function updateCategories(categoriesArr) {
   return {
     type: UPDATE_CATEGORIES,
     payload: categoriesArr
-  }
-}
-
-export function filterPOIsByCategory(category) {
-  return {
-    type: FILTER_CATEGORIES,
-    payload: category
   }
 }

@@ -12,9 +12,10 @@ class Map extends Component {
         });
         this.props.setMap(map);
         this.addAutocomplete(map);
-        this.props.places.forEach(place=>{
-          this.props.setMarker(place, map)
+        const markers = this.props.places.map(place=>{
+          return this.props.setMarker(place, map)
         })
+        this.props.setMarkers(markers);
       }
     });
   }
