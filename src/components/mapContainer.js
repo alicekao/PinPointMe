@@ -44,7 +44,7 @@ class mapContainer extends Component {
   }
 
   setMarker(data, map, openWindow) {
-    const { geometry, lat, lng, name } = data;
+    const { geometry, lat, lng, name, address, category } = data;
     const position = lat ? new google.maps.LatLng(lat, lng) : geometry.location;
 
     const marker = new google.maps.Marker({
@@ -52,7 +52,7 @@ class mapContainer extends Component {
       map
     });
 
-    const iWindow = `<div id="i-window">
+    const optionToSave = `<div id="i-window">
     <form class="form-inline">
       <div class="form-group">
         <input
@@ -65,23 +65,26 @@ class mapContainer extends Component {
       <button type="submit" class="btn btn-outline-primary" id="save-location">save</button>
     </form> ${name}</div>`;
 
+    const alreadySaved = `<div id="i-window">
+    <h6>${name}</h6><em>${category}</em><br>${address}`;
+
     if (openWindow) {
-      this.state.infoWindow.setContent(iWindow);
+      this.state.infoWindow.setContent(optionToSave);
       this.state.infoWindow.setOptions({ maxWidth: 750 });
       this.state.infoWindow.open(map, marker);
+      document.getElementById('save-location').addEventListener('click', () => {
+        const userCategory = document.getElementById('user-category').value;
+        this.submitNewPlace(data, userCategory, position, (added) => {
+          if (added) {
+            this.state.infoWindow.close();
+          }
+        });
+      });
     } else {
       marker.addListener('click', () => {
-        this.state.infoWindow.setContent(iWindow);
+        this.state.infoWindow.setContent(alreadySaved);
         this.state.infoWindow.setOptions({ maxWidth: 750 });
         this.state.infoWindow.open(map, marker);
-        document.getElementById('save-location').addEventListener('click', () => {
-          const userCategory = document.getElementById('user-category').value;
-          this.submitNewPlace(data, userCategory, position, (added) => {
-            if (added) {
-              this.state.infoWindow.close();
-            }
-          });
-        });
       });
     }
 

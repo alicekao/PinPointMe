@@ -33565,6 +33565,8 @@
 	      var lat = data.lat;
 	      var lng = data.lng;
 	      var name = data.name;
+	      var address = data.address;
+	      var category = data.category;
 
 	      var position = lat ? new google.maps.LatLng(lat, lng) : geometry.location;
 
@@ -33573,25 +33575,27 @@
 	        map: map
 	      });
 
-	      var iWindow = '<div id="i-window">\n    <form class="form-inline">\n      <div class="form-group">\n        <input\n          class="form-control"\n          id="user-category"\n          type="text"\n          placeholder="category">\n        </input>\n      </div>\n      <button type="submit" class="btn btn-outline-primary" id="save-location">save</button>\n    </form> ' + name + '</div>';
+	      var optionToSave = '<div id="i-window">\n    <form class="form-inline">\n      <div class="form-group">\n        <input\n          class="form-control"\n          id="user-category"\n          type="text"\n          placeholder="category">\n        </input>\n      </div>\n      <button type="submit" class="btn btn-outline-primary" id="save-location">save</button>\n    </form> ' + name + '</div>';
+
+	      var alreadySaved = '<div id="i-window">\n    <h6>' + name + '</h6><em>' + category + '</em><br>' + address;
 
 	      if (openWindow) {
-	        this.state.infoWindow.setContent(iWindow);
+	        this.state.infoWindow.setContent(optionToSave);
 	        this.state.infoWindow.setOptions({ maxWidth: 750 });
 	        this.state.infoWindow.open(map, marker);
+	        document.getElementById('save-location').addEventListener('click', function () {
+	          var userCategory = document.getElementById('user-category').value;
+	          _this3.submitNewPlace(data, userCategory, position, function (added) {
+	            if (added) {
+	              _this3.state.infoWindow.close();
+	            }
+	          });
+	        });
 	      } else {
 	        marker.addListener('click', function () {
-	          _this3.state.infoWindow.setContent(iWindow);
+	          _this3.state.infoWindow.setContent(alreadySaved);
 	          _this3.state.infoWindow.setOptions({ maxWidth: 750 });
 	          _this3.state.infoWindow.open(map, marker);
-	          document.getElementById('save-location').addEventListener('click', function () {
-	            var userCategory = document.getElementById('user-category').value;
-	            _this3.submitNewPlace(data, userCategory, position, function (added) {
-	              if (added) {
-	                _this3.state.infoWindow.close();
-	              }
-	            });
-	          });
 	        });
 	      }
 
