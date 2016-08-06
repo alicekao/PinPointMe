@@ -31622,9 +31622,11 @@
 	    _axios2.default.post('/api/places/new', data, createAuthHeader()).then(function (resp) {
 	      // resp.data is new category with categoryName, id, and isNew
 	      cb(true);
-	      if (resp.data.isNew) {
-	        dispatch(addToCategories(resp.data));
-	      }
+	      dispatch(fetchUserCategories());
+	      // if (resp.data.isNew) {
+	      // } else {
+	      //   // dispatch(addToCategories(resp.data));
+	      // }
 	    }).catch(function (err) {
 	      console.log('Error: ', err);
 	      dispatch(authError(err));

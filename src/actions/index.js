@@ -37,9 +37,11 @@ export function addNewPlace(data, cb) {
       .then(resp => {
         // resp.data is new category with categoryName, id, and isNew
         cb(true);
-        if (resp.data.isNew) {
-          dispatch(addToCategories(resp.data));
-        }
+        dispatch(fetchUserCategories());
+        // if (resp.data.isNew) {
+        // } else {
+        //   // dispatch(addToCategories(resp.data));
+        // }
       })
       .catch(err => {
         console.log('Error: ', err);
