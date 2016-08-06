@@ -28,14 +28,14 @@ var Category = {
           // Add category to user's category list
           db.relate(userID, 'hasCategory', newCategory, null, (err, rltnshp) => {
             if (err) { return cb(err); }
-            cb(null, newCategory, true)
+            cb(null, newCategory)
           });
         });
       } else {
         // Relate place to existing category
         Category.relatePlaceToCategory(place, existingCategory, (err, cat) => {
           if (err) { return cb(err);}
-          cb(null, existingCategory, false);
+          cb(null, existingCategory);
         });
       }
     });

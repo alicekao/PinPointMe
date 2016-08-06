@@ -35,13 +35,8 @@ export function addNewPlace(data, cb) {
   return dispatch => {
     axios.post('/api/places/new', data, createAuthHeader())
       .then(resp => {
-        // resp.data is new category with categoryName, id, and isNew
         cb(true);
         dispatch(fetchUserCategories());
-        // if (resp.data.isNew) {
-        // } else {
-        //   // dispatch(addToCategories(resp.data));
-        // }
       })
       .catch(err => {
         console.log('Error: ', err);
@@ -75,7 +70,6 @@ export function fetchPlaces() {
   return dispatch => {
     axios.get('/api/places/fetchAll', createAuthHeader())
       .then(resp => {
-        console.log('places are:', resp.data);
         dispatch(updatePlaces(resp.data));
       })
       .catch(err => {
@@ -90,7 +84,6 @@ export function fetchUserCategories() {
     axios.get('/api/categories/fetchByUser', createAuthHeader())
       .then(resp => {
         dispatch(updateCategories(resp.data))
-        console.log('user categories: ', resp);
       })
       .catch(err => {
         console.log("error: ", err);

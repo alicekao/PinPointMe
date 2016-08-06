@@ -44,21 +44,20 @@ class Map extends Component {
       if (!foundPlace.geometry) {window.alert('Try a different place'); return;}
       if (foundPlace.geometry.viewport) {
         map.fitBounds(foundPlace.geometry.viewport);
-        map.setZoom(17);
+        map.setZoom(14);
       }
       else {
         map.setCenter(foundPlace.geometry.location);
-        map.setZoom(17);
+        map.setZoom(14);
       }
-      console.log(foundPlace);
 
-      // Set marker on map
-      this.props.setMarker(foundPlace, map);
+      // Set marker on map & open iWindow
+      const searchResultMarker = this.props.setMarker(foundPlace, map, true);
     });
   }
 
   render() {
-    return (<div style={{ height: "100%" }} id="map">Map</div>)
+    return (<div style={{ height: "100%" }} id="map"></div>)
   }
 }
 

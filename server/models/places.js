@@ -14,9 +14,9 @@ module.exports = {
       });
       // Create new category and relate place and user to it
 
-      Category.saveCategory(category, place, userID, (err, res, isNew) => {
+      Category.saveCategory(category, place, userID, (err, res) => {
         if (err) { cb(err); }
-        cb(null, res, isNew);
+        cb(null, res);
       });
     });
   },

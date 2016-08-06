@@ -29,21 +29,21 @@ class mapContainer extends Component {
       marker.setMap(null);
     });
 
-    const filteredPlaces = nextProps.currFilter ?this.props.places.filter(place => {
+    const filteredPlaces = nextProps.currFilter ? this.props.places.filter(place => {
       return place.category === nextProps.currFilter;
     }) : this.props.places;
 
     const newMarkers = filteredPlaces.map(place => {
       return this.setMarker(place, this.props.map);
     });
-    this.setState({markers: newMarkers});
+    this.setState({ markers: newMarkers });
   }
 
   setMarkersArr(arr) {
-    this.setState({markers: arr});
+    this.setState({ markers: arr });
   }
 
-  setMarker(data, map) {
+  setMarker(data, map, openWindow) {
     const { geometry, lat, lng, name } = data;
     const position = lat ? new google.maps.LatLng(lat, lng) : geometry.location;
 
@@ -63,21 +63,27 @@ class mapContainer extends Component {
         </input>
       </div>
       <button type="submit" class="btn btn-outline-primary" id="save-location">save</button>
-    </form> ${name}</div>`
+    </form> ${name}</div>`;
 
-    marker.addListener('click', () => {
+    if (openWindow) {
       this.state.infoWindow.setContent(iWindow);
-      this.state.infoWindow.setOptions({maxWidth: 750});
+      this.state.infoWindow.setOptions({ maxWidth: 750 });
       this.state.infoWindow.open(map, marker);
-      document.getElementById('save-location').addEventListener('click', () => {
-        const userCategory = document.getElementById('user-category').value;
-        this.submitNewPlace(data, userCategory, position, (added) => {
-          if (added) {
-            this.state.infoWindow.close();
-          }
+    } else {
+      marker.addListener('click', () => {
+        this.state.infoWindow.setContent(iWindow);
+        this.state.infoWindow.setOptions({ maxWidth: 750 });
+        this.state.infoWindow.open(map, marker);
+        document.getElementById('save-location').addEventListener('click', () => {
+          const userCategory = document.getElementById('user-category').value;
+          this.submitNewPlace(data, userCategory, position, (added) => {
+            if (added) {
+              this.state.infoWindow.close();
+            }
+          });
         });
       });
-    });
+    }
 
     return marker;
   }
@@ -87,8 +93,8 @@ class mapContainer extends Component {
     const { vicinity, formatted_address: address, types: category, place_id: google_id, name, geometry: {location}} = data;
     const formattedObj = {
       vicinity, address, google_id, name,
-      category: userCategory, 
-      lat: location.lat(), 
+      category: userCategory,
+      lat: location.lat(),
       lng: location.lng()
     };
     this.props.addNewPlace(formattedObj, cb);
@@ -100,10 +106,11 @@ class mapContainer extends Component {
         <button onClick={this.submitNewPlace.bind(this) }>Add place</button>
         <Search />
         <Map
-          setMarkers={this.setMarkersArr.bind(this)}
+          setMarkers={this.setMarkersArr.bind(this) }
           places={this.props.places}
           infoWindow={this.props.infoWindow}
           setMarker={this.setMarker}
+          map={this.props.map}
           />
       </div>
     );

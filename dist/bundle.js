@@ -31620,13 +31620,8 @@
 	function addNewPlace(data, cb) {
 	  return function (dispatch) {
 	    _axios2.default.post('/api/places/new', data, createAuthHeader()).then(function (resp) {
-	      // resp.data is new category with categoryName, id, and isNew
 	      cb(true);
 	      dispatch(fetchUserCategories());
-	      // if (resp.data.isNew) {
-	      // } else {
-	      //   // dispatch(addToCategories(resp.data));
-	      // }
 	    }).catch(function (err) {
 	      console.log('Error: ', err);
 	      dispatch(authError(err));
@@ -31658,7 +31653,6 @@
 	function fetchPlaces() {
 	  return function (dispatch) {
 	    _axios2.default.get('/api/places/fetchAll', createAuthHeader()).then(function (resp) {
-	      console.log('places are:', resp.data);
 	      dispatch(updatePlaces(resp.data));
 	    }).catch(function (err) {
 	      console.log('Couldn\'t fetch places: ', err);
@@ -31671,7 +31665,6 @@
 	  return function (dispatch) {
 	    _axios2.default.get('/api/categories/fetchByUser', createAuthHeader()).then(function (resp) {
 	      dispatch(updateCategories(resp.data));
-	      console.log('user categories: ', resp);
 	    }).catch(function (err) {
 	      console.log("error: ", err);
 	    });
@@ -33565,7 +33558,7 @@
 	    }
 	  }, {
 	    key: 'setMarker',
-	    value: function setMarker(data, map) {
+	    value: function setMarker(data, map, openWindow) {
 	      var _this3 = this;
 
 	      var geometry = data.geometry;
@@ -33582,19 +33575,25 @@
 
 	      var iWindow = '<div id="i-window">\n    <form class="form-inline">\n      <div class="form-group">\n        <input\n          class="form-control"\n          id="user-category"\n          type="text"\n          placeholder="category">\n        </input>\n      </div>\n      <button type="submit" class="btn btn-outline-primary" id="save-location">save</button>\n    </form> ' + name + '</div>';
 
-	      marker.addListener('click', function () {
-	        _this3.state.infoWindow.setContent(iWindow);
-	        _this3.state.infoWindow.setOptions({ maxWidth: 750 });
-	        _this3.state.infoWindow.open(map, marker);
-	        document.getElementById('save-location').addEventListener('click', function () {
-	          var userCategory = document.getElementById('user-category').value;
-	          _this3.submitNewPlace(data, userCategory, position, function (added) {
-	            if (added) {
-	              _this3.state.infoWindow.close();
-	            }
+	      if (openWindow) {
+	        this.state.infoWindow.setContent(iWindow);
+	        this.state.infoWindow.setOptions({ maxWidth: 750 });
+	        this.state.infoWindow.open(map, marker);
+	      } else {
+	        marker.addListener('click', function () {
+	          _this3.state.infoWindow.setContent(iWindow);
+	          _this3.state.infoWindow.setOptions({ maxWidth: 750 });
+	          _this3.state.infoWindow.open(map, marker);
+	          document.getElementById('save-location').addEventListener('click', function () {
+	            var userCategory = document.getElementById('user-category').value;
+	            _this3.submitNewPlace(data, userCategory, position, function (added) {
+	              if (added) {
+	                _this3.state.infoWindow.close();
+	              }
+	            });
 	          });
 	        });
-	      });
+	      }
 
 	      return marker;
 	    }
@@ -33632,7 +33631,8 @@
 	          setMarkers: this.setMarkersArr.bind(this),
 	          places: this.props.places,
 	          infoWindow: this.props.infoWindow,
-	          setMarker: this.setMarker
+	          setMarker: this.setMarker,
+	          map: this.props.map
 	        })
 	      );
 	    }
@@ -33814,25 +33814,20 @@
 	        }
 	        if (foundPlace.geometry.viewport) {
 	          map.fitBounds(foundPlace.geometry.viewport);
-	          map.setZoom(17);
+	          map.setZoom(14);
 	        } else {
 	          map.setCenter(foundPlace.geometry.location);
-	          map.setZoom(17);
+	          map.setZoom(14);
 	        }
-	        console.log(foundPlace);
 
-	        // Set marker on map
-	        _this3.props.setMarker(foundPlace, map);
+	        // Set marker on map & open iWindow
+	        var searchResultMarker = _this3.props.setMarker(foundPlace, map, true);
 	      });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { style: { height: "100%" }, id: 'map' },
-	        'Map'
-	      );
+	      return _react2.default.createElement('div', { style: { height: "100%" }, id: 'map' });
 	    }
 	  }]);
 
