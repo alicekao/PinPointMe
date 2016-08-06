@@ -33861,6 +33861,10 @@
 
 	var actions = _interopRequireWildcard(_actions);
 
+	var _SideBarEntry = __webpack_require__(339);
+
+	var _SideBarEntry2 = _interopRequireDefault(_SideBarEntry);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -33898,23 +33902,14 @@
 	        );
 	      }
 	      return this.props.categories.map(function (cat) {
-	        return _react2.default.createElement(
-	          'a',
-	          {
-	            onClick: function onClick() {
-	              return _this2.props.filterPOIsByCategory(cat.categoryName);
-	            },
-	            href: '#',
-	            className: 'list-group-item list-group-item-action',
-	            key: cat.id },
-	          cat.categoryName,
-	          ' ',
-	          _react2.default.createElement(
-	            'span',
-	            { className: 'tag tag-default tag-pill pull-xs-right' },
-	            cat.num
-	          )
-	        );
+	        return _react2.default.createElement(_SideBarEntry2.default, {
+	          onClick: function onClick() {
+	            return _this2.props.filterPOIsByCategory(cat.categoryName);
+	          },
+	          name: cat.categoryName,
+	          key: cat.id,
+	          count: cat.num
+	        });
 	      });
 	    }
 	  }, {
@@ -33952,6 +33947,44 @@
 	}
 
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, actions)(SideBar);
+
+/***/ },
+/* 339 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var SideBarEntry = function SideBarEntry(_ref) {
+	  var name = _ref.name;
+	  var onClick = _ref.onClick;
+	  var count = _ref.count;
+	  return _react2.default.createElement(
+	    "a",
+	    {
+	      onClick: onClick,
+	      href: "#",
+	      className: "list-group-item list-group-item-action"
+	    },
+	    name,
+	    _react2.default.createElement(
+	      "span",
+	      { className: "tag tag-default tag-pill pull-xs-right" },
+	      count
+	    )
+	  );
+	};
+
+	exports.default = SideBarEntry;
 
 /***/ }
 /******/ ]);

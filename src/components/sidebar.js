@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
+import SideBarEntry from './SideBarEntry';
 
 class SideBar extends Component {
 
@@ -12,13 +13,12 @@ class SideBar extends Component {
       return <div>Fetching</div>
     }
     return this.props.categories.map(cat => {
-      return <a
+      return <SideBarEntry
         onClick={()=>this.props.filterPOIsByCategory(cat.categoryName)}
-        href="#"
-        className="list-group-item list-group-item-action"
-        key={cat.id}>
-        {cat.categoryName} <span className="tag tag-default tag-pill pull-xs-right">{cat.num}</span>
-      </a>
+        name={cat.categoryName}
+        key={cat.id}
+        count={cat.num}
+        />
     });
   }
 
