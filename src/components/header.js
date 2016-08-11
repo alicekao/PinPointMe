@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import * as actions from '../actions/index';
 
-class Header extends Component {
+export class Header extends Component {
   renderToolbar() {
     const { isAuth, logoutUser } = this.props;
 
