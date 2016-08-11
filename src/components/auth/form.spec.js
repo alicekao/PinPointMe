@@ -4,12 +4,11 @@ import { shallow } from 'enzyme';
 import Form from './form';
 
 describe('Auth Forms', () => {
+  const wrapper = shallow(<Form />);
   it('Should contain a form', () => {
-    const wrapper = shallow(<Form />);
     expect(wrapper.type()).toEqual('form');
   });
   it('Should have username and password fields', () => {
-    const wrapper = shallow(<Form />);
     expect(wrapper.find('input').length).toEqual(2);
     expect(wrapper.find('fieldset').length).toEqual(2);
     expect(wrapper.find('label').first().text()).toEqual('Username: ');
@@ -17,7 +16,7 @@ describe('Auth Forms', () => {
   });
   it('Should have a submit button', () => {
     const spy = createSpy();
-    const wrapper = shallow(<Form handleSubmit={spy}/>);
+    let wrapper = shallow(<Form handleSubmit={spy}/>);
     expect(wrapper.find('button').length).toEqual(1);
     wrapper.simulate('submit');
     expect(spy).toHaveBeenCalled();
