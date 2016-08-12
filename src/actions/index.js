@@ -36,7 +36,7 @@ export function addNewPlace(data, cb) {
     return axios.post('/api/places/new', data, createAuthHeader())
       .then(resp => {
         cb(true);
-        dispatch(fetchUserCategories());
+        return dispatch(fetchUserCategories());
       })
       .catch(err => {
         console.log('Error: ', err);
@@ -87,7 +87,7 @@ export function fetchUserCategories() {
       })
       .catch(err => {
         console.log("error: ", err);
-      })
+      });
   }
 }
 
@@ -143,7 +143,7 @@ export function signinUser({username, password}) {
 
 export function signupUser({username, password}) {
   return dispatch => {
-    axios.post('/auth/signup', { username, password })
+    return axios.post('/auth/signup', { username, password })
       .then(resp => {
         dispatch(onSignIn(resp.data.token));
       })

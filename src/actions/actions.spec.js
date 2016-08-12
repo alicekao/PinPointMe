@@ -28,6 +28,7 @@ describe('Actions', () => {
       expect(store.getActions().length).toEqual(1);
       expect(actions.updateCategories(categories)).toEqual(expectedAction).toEqual(store.getActions()[0]);
     });
+
     it('Update places', () => {
       const places = [{ name: 'x' }, { name: 'y' }];
       const expectedAction = {
@@ -41,6 +42,7 @@ describe('Actions', () => {
       expect(store.getActions().length).toEqual(1);
       expect(actions.updatePlaces(places)).toEqual(expectedAction).toEqual(store.getActions()[0]);
     });
+
     it('Set map', () => {
       const map = { map: 'mapInstance' };
       const expectedAction = {
@@ -58,8 +60,8 @@ describe('Actions', () => {
     it('Logout user', () => {
       const initialState = {};
       const store = mockStore(initialState);
-      const expectedAction = { 
-        type: types.DEAUTH_USER 
+      const expectedAction = {
+        type: types.DEAUTH_USER
       };
       store.dispatch(expectedAction);
       expect(store.getActions().length).toEqual(1);
@@ -79,6 +81,7 @@ describe('Actions', () => {
       expect(store.getActions().length).toEqual(1);
       expect(actions.filterPOIsByCategory(category)).toEqual(expectedAction).toEqual(store.getActions()[0]);
     });
+    
     it('Auth error', () => {
       const message = 'invalid';
       const expectedAction = {
@@ -92,6 +95,7 @@ describe('Actions', () => {
       expect(store.getActions().length).toEqual(1);
       expect(actions.authError(message)).toEqual(expectedAction).toEqual(store.getActions()[0]);
     });
+    
     it('Check jwt', () => {
       const initialState = {};
       const store = mockStore(initialState);
@@ -102,7 +106,13 @@ describe('Actions', () => {
       expect(store.getActions().length).toEqual(1);
       expect(store.getActions()[0]).toEqual(expectedAction);
     });
-    describe('Async actions: ', ()=> {
+
+    describe('Async actions: ', () => {
+      const expectedPlaces = [{ name: 1 }, { name: 2 }];
+      mock.onGet('/api/places/fetchAll').reply(200, {
+        data: expectedPlaces
+      });
+
       mock.onPost('/api/places/new').reply(200, {
         categories: []
       });
@@ -112,20 +122,40 @@ describe('Actions', () => {
         data: expectedCategories
       });
 
-      it('Fetches user categories', ()=> {
-        const place = {
-          name: 'test name'
-        };
+      it('Fetches user categories', () => {
         const initialState = {};
         const store = mockStore(initialState);
         return store.dispatch(actions.fetchUserCategories())
-        .then(()=> {
-          expect(store.getActions()[0].payload.data).toEqual(expectedCategories);
-          expect(store.getActions().length).toBe(1);
-          expect(store.getActions()[0].type).toBe(types.UPDATE_CATEGORIES);
-        });
+          .then(() => {
+            expect(store.getActions().length).toBe(1);
+            expect(store.getActions()[0].payload.data).toEqual(expectedCategories);
+            expect(store.getActions()[0].type).toBe(types.UPDATE_CATEGORIES);
+          });
       });
 
-    })
+      it('Fetches places', () => {
+        const store = mockStore({});
+        return store.dispatch(actions.fetchPlaces())
+          .then(() => {
+            expect(store.getActions().length).toBe(1);
+            expect(store.getActions()[0].payload.data).toEqual(expectedPlaces);
+            expect(store.getActions()[0].type).toBe(types.UPDATE_PLACES);
+          });
+      });
+
+      it('Adds new place', () => {
+        const place = {name: 'test'};
+        const store = mockStore({});
+        return store.dispatch(actions.addNewPlace(place, isSuccessful => {
+          // Successful addition
+          expect(isSuccessful).toBe(true);
+        }))
+        .then(()=> {
+          expect(store.getActions().length).toBe(1);
+          // Updates category list
+          expect(store.getActions()[0].payload.data).toEqual(expectedCategories);
+        });
+      });
+    });
   });
 });
