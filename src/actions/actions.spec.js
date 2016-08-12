@@ -1,5 +1,7 @@
 import configureStore from 'redux-mock-store';
 import promiseMiddleware from 'redux-thunk';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 
 import expect, { createSpy } from 'expect';
 import * as actions from './index';
@@ -7,6 +9,7 @@ import * as types from './types';
 import localStorage from 'mock-local-storage';
 
 const mockStore = configureStore([promiseMiddleware]);
+const mock = new MockAdapter(axios);
 
 describe('Actions', () => {
 
@@ -98,6 +101,31 @@ describe('Actions', () => {
       store.dispatch(expectedAction);
       expect(store.getActions().length).toEqual(1);
       expect(store.getActions()[0]).toEqual(expectedAction);
+    });
+    describe('Async actions: ', ()=> {
+      mock.onPost('/api/places/new').reply(200, {
+        categories: []
+      });
+
+      const expectedCategories = ['food', 'tourist'];
+      mock.onGet('/api/categories/fetchByUser').reply(200, {
+        data: expectedCategories
+      });
+
+      it('Fetches user categories', ()=> {
+        const place = {
+          name: 'test name'
+        };
+        const initialState = {};
+        const store = mockStore(initialState);
+        return store.dispatch(actions.fetchUserCategories())
+        .then(()=> {
+          expect(store.getActions()[0].payload.data).toEqual(expectedCategories);
+          expect(store.getActions().length).toBe(1);
+          expect(store.getActions()[0].type).toBe(types.UPDATE_CATEGORIES);
+        });
+      });
+
     })
   });
 });

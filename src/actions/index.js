@@ -33,7 +33,7 @@ export function addNewCategory(category) {
 // data is an obj with place: name, lat, lng, category
 export function addNewPlace(data, cb) {
   return dispatch => {
-    axios.post('/api/places/new', data, createAuthHeader())
+    return axios.post('/api/places/new', data, createAuthHeader())
       .then(resp => {
         cb(true);
         dispatch(fetchUserCategories());
@@ -68,7 +68,7 @@ export function checkJWT() {
 
 export function fetchPlaces() {
   return dispatch => {
-    axios.get('/api/places/fetchAll', createAuthHeader())
+    return axios.get('/api/places/fetchAll', createAuthHeader())
       .then(resp => {
         dispatch(updatePlaces(resp.data));
       })
@@ -81,7 +81,7 @@ export function fetchPlaces() {
 
 export function fetchUserCategories() {
   return dispatch => {
-    axios.get('/api/categories/fetchByUser', createAuthHeader())
+    return axios.get('/api/categories/fetchByUser', createAuthHeader())
       .then(resp => {
         dispatch(updateCategories(resp.data))
       })
@@ -130,7 +130,7 @@ export function setMap(map) {
 
 export function signinUser({username, password}) {
   return dispatch => {
-    axios.post('/auth/signin', { username, password })
+    return axios.post('/auth/signin', { username, password })
       .then(resp => {
         dispatch(onSignIn(resp.data));
       })
