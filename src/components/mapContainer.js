@@ -72,7 +72,8 @@ class mapContainer extends Component {
       this.state.infoWindow.setContent(optionToSave);
       this.state.infoWindow.setOptions({ maxWidth: 750 });
       this.state.infoWindow.open(map, marker);
-      document.getElementById('save-location').addEventListener('click', () => {
+      document.getElementById('save-location').addEventListener('click', (e) => {
+        e.preventDefault();
         const userCategory = document.getElementById('user-category').value;
         this.submitNewPlace(data, userCategory, position, (added) => {
           if (added) {
@@ -106,7 +107,6 @@ class mapContainer extends Component {
   render() {
     return (
       <div className="col-md-9" style={{ height: '100%' }}>
-        {/*<button onClick={this.submitNewPlace.bind(this) }>Add place</button>*/}
         <Search/>
         <Map
           setMarkers={this.setMarkersArr.bind(this) }
