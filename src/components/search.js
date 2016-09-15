@@ -20,7 +20,8 @@ class Search extends Component {
 
 function mapStateToProps(state) {
   return {
-    map: state.map.mapInstance
+    map: state.map.mapInstance,
+    currSearch: state.map.currSearch
   };
 }
 

@@ -3,7 +3,8 @@ import {
   UPDATE_PLACES,
   UPDATE_CATEGORIES,
   ADD_TO_CATEGORY,
-  FILTER_CATEGORIES
+  FILTER_CATEGORIES,
+  CLEAR_SEARCH
 } from '../actions/types';
 
 const initialState = {

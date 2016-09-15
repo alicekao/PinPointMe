@@ -31,15 +31,17 @@ export function addNewCategory(category) {
   }
 }
 // data is an obj with place: name, lat, lng, category
-export function addNewPlace(data) {
+export function addNewPlace(data, cb) {
   return dispatch => {
     return axios.post('/api/places/new', data, createAuthHeader())
       .then(resp => {
-        // cb(true);
+        cb(true);
+        document.getElementById('search').value='';
         dispatch(fetchPlaces());
         return dispatch(fetchUserCategories());
       })
       .catch(err => {
+        cb(false);
         console.log('Error: ', err);
         dispatch(authError(err));
       });

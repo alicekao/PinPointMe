@@ -101,7 +101,7 @@ class mapContainer extends Component {
       lat: location.lat(),
       lng: location.lng()
     };
-    this.props.addNewPlace(formattedObj);
+    this.props.addNewPlace(formattedObj, cb);
   }
 
   render() {
