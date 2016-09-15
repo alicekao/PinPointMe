@@ -50,7 +50,6 @@ class Map extends Component {
         map.setCenter(foundPlace.geometry.location);
         map.setZoom(14);
       }
-
       // Set marker on map & open iWindow
       const searchResultMarker = this.props.setMarker(foundPlace, map, true);
     });
@@ -58,7 +57,7 @@ class Map extends Component {
 
   render() {
     return (
-      <div className="row"
+      <div
         style={{ height: "92%" }}
         id="map">
       </div>

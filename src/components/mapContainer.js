@@ -101,12 +101,12 @@ class mapContainer extends Component {
       lat: location.lat(),
       lng: location.lng()
     };
-    this.props.addNewPlace(formattedObj, cb);
+    this.props.addNewPlace(formattedObj);
   }
 
   render() {
     return (
-      <div className="col-md-9" style={{ height: '100%' }}>
+      <div className="col-md-9" style={{ height: '95%' }}>
         <Search/>
         <Map
           setMarkers={this.setMarkersArr.bind(this) }

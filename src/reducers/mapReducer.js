@@ -18,7 +18,7 @@ export default function (state = initialState, action) {
     case SET_MAP:
       return {...state, mapInstance: action.payload };
     case UPDATE_PLACES:
-      return {...state, places: [...state.places, ...action.payload] };
+      return {...state, places: action.payload };
     case ADD_TO_CATEGORY:
       return {...state, categories: [...state.categories, action.payload] };
     case UPDATE_CATEGORIES:

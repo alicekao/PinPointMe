@@ -6,7 +6,7 @@ class Search extends Component {
 
   render() {
     return (
-      <div className="row" style={{height: '8%'}}>
+      <div style={{height: '8%'}}>
         <input className="col-md-10"
           id="search"
           placeholder="Enter a location"></input>
